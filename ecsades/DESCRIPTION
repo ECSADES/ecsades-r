@@ -1,0 +1,12 @@
+Package: ecsades
+Type: Package
+Title: Environmental contours for safe design of ships and other marine structures 
+Version: 1.0.0
+Date: 2018-10-05
+Author: Ye Liu
+Maintainer: Ye Liu <y.liu@hrwallingford.com>
+Description: 
+License: Apache License v2.0
+ByteCompile: yes
+Depends: data.table, ggplot2, lmom, evd
+RoxygenNote: 6.0.1
