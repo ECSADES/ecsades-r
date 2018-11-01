@@ -1,6 +1,6 @@
 # DSC ---------------------------------------------------------------------
 
-estimate_dsc = function(jdistr, output_rp, n_point, standardize = TRUE){
+estimate_dsc = function(jdistr, output_rp, n_point=100, standardize = TRUE){
   
   ## Generate sample data
   sample_data = .sample_jdistr(jdistr = jdistr, sim_year = max(output_rp)*.rp_multiplier)  

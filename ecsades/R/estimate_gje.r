@@ -1,8 +1,10 @@
 # GJE ---------------------------------------------------------------------
 
 estimate_gje = function(
-  jdistr, output_rp, n_point,
-  ref_tp=rep(0, length(output_rp)), ref_hs=rep(0, length(output_rp))){
+  jdistr, output_rp,
+  n_point = 100,
+  ref_tp = rep(0, length(output_rp)),
+  ref_hs = rep(0, length(output_rp))){
   
   ## Generate sample data
   sample_data = .sample_jdistr(jdistr = jdistr, sim_year = max(output_rp)*.rp_multiplier)  

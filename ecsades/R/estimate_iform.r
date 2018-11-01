@@ -1,4 +1,4 @@
-estimate_iform = function(jdistr, output_rp, n_point, alpha){
+estimate_iform = function(jdistr, output_rp, n_point=100, alpha=0){
   if(class(jdistr)=="ht"){
     res = .estimate_iform_from_ht(ht = jdistr, output_rp = output_rp, n_point = n_point, alpha = alpha)
   }else if(class(jdistr)=="wln"){
