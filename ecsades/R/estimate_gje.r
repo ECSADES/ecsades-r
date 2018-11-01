@@ -70,6 +70,3 @@ estimate_gje = function(
 }
 
 
-ggplot()+
-  geom_point(aes(x=hs, y=tp), data=dat, size=.1)+
-  geom_path(aes(x=hs, y=tp, colour=factor(rp), group=rp), data=res)
