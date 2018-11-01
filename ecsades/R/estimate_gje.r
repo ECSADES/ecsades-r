@@ -47,7 +47,7 @@ estimate_gje = function(
   }
   
   ## Return
-  res = rbindlist(res)
+  res = rbindlist(res)[,.(rp,hs,tp)]
   return(res)
 }
 
