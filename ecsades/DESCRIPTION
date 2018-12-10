@@ -9,4 +9,4 @@ Description:
 License: Apache License v2.0
 ByteCompile: yes
 Depends: data.table, ggplot2, evd
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

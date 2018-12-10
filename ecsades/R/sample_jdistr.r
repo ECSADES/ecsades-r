@@ -1,5 +1,17 @@
-# Sampling function -------------------------------------------------------
-
+#' Drawing a sample from a fitted joint distribution
+#'
+#' This function draws a random sample from an existing fitted Weibull-log-normal
+#' (\code{wln}) or Heffernan-Tawn (\code{ht}) object for a given duration
+#' 
+#' @param jdistr a \code{wln} or \code{ht} joint distribution object
+#' @param sim_year the period of the simulate data in equivalent number of years
+#'
+#' @return The function returns \code{data.table} object with two columns - wave
+#' height \code{hs} and wave period and \code{tp}
+#'
+#' @examples
+#'
+#' @export
 sample_jdistr = function(jdistr, sim_year){
   
   if(class(jdistr)=="ht"){
@@ -14,7 +26,6 @@ sample_jdistr = function(jdistr, sim_year){
 
 
 # Heffernan-Tawn ----------------------------------------------------------
-
 .sample_ht = function(ht, sim_year){
   
   set.seed(.seed_sampling)
@@ -71,7 +82,6 @@ sample_jdistr = function(jdistr, sim_year){
 
 
 # Weibull log-normal ------------------------------------------------------
-
 .sample_wln = function(wln, sim_year){
   set.seed(.seed_sampling)
   n_sim = round(wln$npy*sim_year)
