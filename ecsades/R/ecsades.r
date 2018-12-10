@@ -3,4 +3,4 @@
 .seed_sorting = 170899
 .seed_sampling = 121110
 .rp_multiplier = 50
-
+.knn = 100
