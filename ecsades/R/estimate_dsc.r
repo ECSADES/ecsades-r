@@ -6,7 +6,7 @@ estimate_dsc = function(
   
   ## Generate sample data
   if(is.null(sample_data)){
-    sample_data = .sample_jdistr(jdistr = jdistr, sim_year = max(output_rp)*.rp_multiplier)  
+    sample_data = sample_jdistr(jdistr = jdistr, sim_year = max(output_rp)*.rp_multiplier)  
     npy = jdistr$npy
   }else{
     npy = sample_data_npy

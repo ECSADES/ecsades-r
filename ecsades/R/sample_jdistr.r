@@ -1,6 +1,6 @@
 # Sampling function -------------------------------------------------------
 
-.sample_jdistr = function(jdistr, sim_year){
+sample_jdistr = function(jdistr, sim_year){
   
   if(class(jdistr)=="ht"){
     res = .sample_ht(jdistr, sim_year)
