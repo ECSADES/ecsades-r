@@ -1,15 +1,23 @@
 # GJE ---------------------------------------------------------------------
 
 estimate_gje = function(
-  jdistr, output_rp,
+  jdistr, sample_data = NULL, sample_data_npy = NULL,
+  output_rp,
   n_point = 100,
   ref_tp = rep(0, length(output_rp)),
   ref_hs = rep(0, length(output_rp))){
   
   ## Generate sample data
-  sample_data = .sample_jdistr(jdistr = jdistr, sim_year = max(output_rp)*.rp_multiplier)  
+  if(is.null(sample_data)){
+    sample_data = .sample_jdistr(jdistr = jdistr, sim_year = max(output_rp)*.rp_multiplier)  
+    npy = jdistr$npy
+  }else{
+    sample_data = copy(sample_data)
+    npy = sample_data_npy
+  }
   sample_data[, q:=NA_character_]
   
+  ## Main loop
   res = list()
   for(i in 1:length(output_rp)){
     this_rp = output_rp[i]
@@ -22,12 +30,12 @@ estimate_gje = function(
     sample_data[hs<=ref_hs[i] & tp<=ref_tp[i], q:="ll"]
     
     ## Define contours per quadrant
-    target_prob = 1/(this_rp*jdistr$npy)
+    target_prob = 1/(this_rp*npy)
     target_n = target_prob*sample_data[, .N]
     list_out = list()
     n_q = sample_data[, uniqueN(q)]
-   
-     for(this_q in unique(sample_data$q)){
+    
+    for(this_q in unique(sample_data$q)){
       qdata = sample_data[q==this_q]
       res_hs = lapply(
         X = qdata[, seq(min(qhs), quantile(qhs, 1-target_prob), length.out=n_point/n_q)],
