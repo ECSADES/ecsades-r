@@ -1,9 +1,17 @@
 # DSC ---------------------------------------------------------------------
 
-estimate_dsc = function(jdistr, output_rp, n_point=100, standardize = TRUE){
+estimate_dsc = function(
+  jdistr, sample_data = NULL, sample_data_npy = NULL,
+  output_rp, n_point=100, standardize = TRUE){
   
   ## Generate sample data
-  sample_data = .sample_jdistr(jdistr = jdistr, sim_year = max(output_rp)*.rp_multiplier)  
+  if(is.null(sample_data)){
+    sample_data = .sample_jdistr(jdistr = jdistr, sim_year = max(output_rp)*.rp_multiplier)  
+    npy = jdistr$npy
+  }else{
+    npy = sample_data_npy
+  }
+
   
   ## Standardization
   ec_data = copy(sample_data)
@@ -16,7 +24,7 @@ estimate_dsc = function(jdistr, output_rp, n_point=100, standardize = TRUE){
   }
     
   ## C_theta calculation
-  ex_prob = 1/(jdistr$npy*output_rp)
+  ex_prob = 1/(npy*output_rp)
   theta = seq(0, 2*pi, length.out = n_point+1)
   d_theta = 2*pi/(n_point)
   calc = data.table(rp = rep(output_rp, each=n_point+1), theta = theta, ex_prob = rep(ex_prob, each=n_point+1))
@@ -38,3 +46,5 @@ estimate_dsc = function(jdistr, output_rp, n_point=100, standardize = TRUE){
   res = calc[, .(rp, hs, tp)]
   return(res)
 }
+
+
