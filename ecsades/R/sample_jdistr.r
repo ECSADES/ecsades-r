@@ -19,7 +19,7 @@
   
   set.seed(.seed_sampling)
   n_sim = sim_year*ht$npy
-  
+
   # Sample overall freq
   res = ht$dep$dep_data[sample.int(.N, size = n_sim, replace = T), .(u_hs, u_tp)]
   rot_wb = res[, .N^(-1/6)]
@@ -42,7 +42,6 @@
     p = u_gpd, loc = ht$margin$hs$par[1],
     scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
   res[, u_gpd:=NULL]
-  
   res[, tp:=quantile(ht$margin$tp$emp, u_tp)]
   res[u_tp>ht$margin$p_margin_thresh, u_gpd:=(u_tp-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
   res[u_tp>ht$margin$p_margin_thresh, tp:=evd::qgpd(
@@ -60,7 +59,8 @@
   sim_data[u_cond<0.5, l_cond:=log(2*u_cond)]
   sim_data[u_cond>=0.5, l_cond:=-log(2-2*u_cond)]
   resid_max = sim_data[, (1-a)*l_cond^(1-b)]
-  extended_resid = resid+rnorm(length(resid)*100, 0, bw.SJ(resid))
+  resid_bw = bw.SJ(resid)
+  extended_resid = resid+rnorm(length(resid)*100, 0, resid_bw)
   resid_sample = sapply(resid_max, function(x)sample(extended_resid[extended_resid<x],1))
   sim_data[, l_dep:=resid_sample*l_cond^b+a*l_cond]
   sim_data[l_dep<0, u_dep:=.5*exp(l_dep)]
