@@ -1,3 +1,34 @@
+#' Fitting Weibull-log-normal model to wave data
+#'
+#' This function fits a Weibull-log-normal (\code{ht}) model to the given wave data, such that the wave height
+#' \code{hs} follows a translated (or 3-parameter) Weibull distribution, and the wave period given the wave
+#' follows a conditional log-normal distributuion with the location and scale parameters as functions
+#' of the corresponding \code{hs} value. The formulation of the conditional log-normal distribution follows that
+#' proposed in Haver and Winterstein (2008).
+#' 
+#' @param data the wave data in the form a \code{data.table} with wave height \code{hs} and wave period
+#' \code{tp} as columns
+#' 
+#' @param npy the number of data points per year, usually estimated by the number of rows in the
+#' supplied wave data divided by the total period of data coverage (in years)
+#' 
+#' @return An joint distribution object of class \code{wln} containing the key information of a fitted
+#' Weibull-log-normal model, including the three parameters of the Weibull distribution for \code{hs}
+#' and the seven parameters of the conditional log-normal distribution for \code{tp} given \code{tp}
+#'
+#' @examples
+#' #' # Load data
+#' data(noaa_ww3)
+#' 
+#' # Fit Weibull-log-normal distribution 
+#' noaa_wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
+#' 
+#' @references 
+#' Haver, Sverre & Winterstein, Steven. (2009). Environmental Contour Lines: A Method for Estimating Long
+#' Term Extremes by a Short Term Analysis. Transactions - Society of Naval Architects and Marine Engineers. 116. 
+#' 
+#' 
+#' @export
 fit_wln = function(data, npy){
   
   res = list()
