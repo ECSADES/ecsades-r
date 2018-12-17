@@ -18,9 +18,10 @@ or \code{\link{fit_wln}}.  See details.}
 \item{output_rp}{the required return periods (in years) for the estimated contours. Note that return periods
 that are substantially larger than the data coverage may lead to a long processing time}
 
-\item{n_point}{the number of points to output around each contour}
+\item{n_point}{the number of points to output around each contour. The default value is 100}
 
-\item{standardize}{whether or not to apply the recommended standardization as detailed in Husbey et al. (2015)}
+\item{standardize}{whether or not to apply the recommended standardization as detailed in Husbey et al. (2015).
+The default value is \code{TRUE}.}
 }
 \value{
 A set of estimated environmental contours with the specified return periods in the format
