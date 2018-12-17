@@ -26,7 +26,7 @@ of the corresponding \code{hs} value. The formulation of the conditional log-nor
 proposed in Haver and Winterstein (2008).
 }
 \examples{
-#' # Load data
+# Load data
 data(noaa_ww3)
 
 # Fit Weibull-log-normal distribution 
