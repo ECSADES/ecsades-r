@@ -28,6 +28,8 @@
 #' # Draw the equivalent of 100-year of data from the fitted Weibull-log-normal model
 #' sim_wln_100y = sample_jdistr(jdistr = noaa_wln, sim_year = 100)
 #' 
+#' @seealso \code{\link{fit_ht}}, \code{\link{fit_wln}}
+#' 
 #' @export
 sample_jdistr = function(jdistr, sim_year){
   

@@ -31,6 +31,8 @@
 #' @references Heffernan, Janet & A. Tawn, Jonathan. (2004). A Conditional Approach for Multivariate Extreme Values.
 #' Journal of the Royal Statistical Society Series B. 66. 497-546. 10.1111/j.1467-9868.2004.02050.x. 
 #' 
+#' @seealso \code{\link{fit_wln}}, \code{\link{sample_jdistr}}
+#' 
 #' @export
 fit_ht = function(data, npy, p_margin_thresh, p_dep_thresh){
   

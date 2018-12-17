@@ -41,3 +41,6 @@ noaa_ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, p_margin_thresh = 0.9
 Heffernan, Janet & A. Tawn, Jonathan. (2004). A Conditional Approach for Multivariate Extreme Values.
 Journal of the Royal Statistical Society Series B. 66. 497-546. 10.1111/j.1467-9868.2004.02050.x.
 }
+\seealso{
+\code{\link{fit_wln}}, \code{\link{sample_jdistr}}
+}

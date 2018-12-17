@@ -38,3 +38,6 @@ noaa_wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
 sim_wln_100y = sample_jdistr(jdistr = noaa_wln, sim_year = 100)
 
 }
+\seealso{
+\code{\link{fit_ht}}, \code{\link{fit_wln}}
+}

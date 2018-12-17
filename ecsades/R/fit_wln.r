@@ -28,6 +28,7 @@
 #' Haver, Sverre & Winterstein, Steven. (2009). Environmental Contour Lines: A Method for Estimating Long
 #' Term Extremes by a Short Term Analysis. Transactions - Society of Naval Architects and Marine Engineers. 116. 
 #' 
+#' @seealso \code{\link{fit_ht}}, \code{\link{sample_jdistr}}
 #' 
 #' @export
 fit_wln = function(data, npy){
