@@ -34,6 +34,8 @@
 #' @return A set of estimated environmental contours with the specified return periods in the format
 #' of a \code{data.table} with \code{rp}, \code{hs}, and \code{tp} as columns.
 #'
+#' @seealso \code{\link{fit_ht}}, \code{\link{fit_wln}}, \code{\link{sample_jdistr}}, \code{\link{plot_ec}}
+#' 
 #' @examples
 #' # Load data
 #' data(noaa_ww3)
@@ -42,10 +44,16 @@
 #' ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, p_margin_thresh = 0.95, p_dep_thresh = 0.95)
 #' dsc_ht = estimate_dsc(jdistr = ht, output_rp = c(1,10,100))
 #' 
+#' # Plot output
+#' plot_ec(dsc_ht, noaa_ww3)
+#' 
 #' # Estimate the DSC based on sample data
 #' wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
 #' sample_data = sample_jdistr(jdistr = wln, sim_year = 1000)
 #' dsc_data = estimate_dsc(sample_data = sample_data, sample_data_npy = nrow(sample_data)/1000, output_rp = c(1,10,100))
+#' 
+#' # Plot output
+#' plot_ec(dsc_data, noaa_ww3)
 #' 
 #' @references
 #' Huseby, A., Vanem, E., Natvig, B., 2015. Alternative environmental contours for structural reliability
