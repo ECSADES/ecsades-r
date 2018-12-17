@@ -1,5 +1,6 @@
 #' Sample wave data by NOAA
-#'
+#' 
+#' @description 
 #' This sample dataset contains wave peak data (large Hs and/or Tp) as extracted from
 #' the 3-hourly (before March 1st 2010) and 1-hourly (after March 1st 2010) wave time series data 
 #' provided by NOAA's WaveWatch III project for location 30.5N, 240E.

@@ -1,5 +1,6 @@
 #' Drawing a sample from a fitted joint distribution
 #'
+#' @description 
 #' This function draws a random sample from an existing fitted Weibull-log-normal
 #' (\code{wln}) or Heffernan-Tawn (\code{ht}) model for a given duration.
 #' 
