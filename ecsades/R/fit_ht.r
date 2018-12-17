@@ -1,6 +1,10 @@
 #' Fitting Heffernan-Tawn model to wave data
-#'
-#' This function fits a Heffernan-Tawn (\code{ht}) model to the given wave data
+
+#' @description 
+#' This function fits a Heffernan-Tawn (\code{ht}) model to the given wave data. The marginal distributions are
+#' a mixture model with an empirical distribution below a specified threshold, and the generalised Pareto distribution
+#' (GPD) above the threshold. The dependence structure is the conditional extreme value model proposed in
+#' Heffernan and Tawn (2004).
 #' 
 #' @param data the wave data in the form a \code{data.table} with wave height \code{hs} and wave period
 #' \code{tp} as columns

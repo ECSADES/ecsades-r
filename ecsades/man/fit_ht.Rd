@@ -24,7 +24,10 @@ An joint distribution object of class \code{ht} containing the key information o
 Heffernan-Tawn model, including the marginal distribution parameters and the dependence model parameters.
 }
 \description{
-This function fits a Heffernan-Tawn (\code{ht}) model to the given wave data
+This function fits a Heffernan-Tawn (\code{ht}) model to the given wave data. The marginal distributions are
+a mixture model with an empirical distribution below a specified threshold, and the generalised Pareto distribution
+(GPD) above the threshold. The dependence structure is the conditional extreme value model proposed in
+Heffernan and Tawn (2004).
 }
 \examples{
 # Load data
