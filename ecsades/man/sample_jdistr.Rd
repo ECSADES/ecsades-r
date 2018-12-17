@@ -7,16 +7,34 @@
 sample_jdistr(jdistr, sim_year)
 }
 \arguments{
-\item{jdistr}{a \code{wln} or \code{ht} joint distribution object}
+\item{jdistr}{a \code{wln} or \code{ht} joint distribution object, as the output from function \code{\link{fit_wln}}
+and \code{\link{fit_ht}} respectively}
 
 \item{sim_year}{the period of the simulate data in equivalent number of years}
 }
 \value{
-a \code{data.table} object with two columns \code{hs} and \code{tp}
+The function returns \code{data.table} object with two columns - wave
+height \code{hs} and wave period and \code{tp}.
 }
 \description{
-Creates a plot of the crayon colors in \code{\link{brocolors}}
+This function draws a random sample from an existing fitted Weibull-log-normal
+(\code{wln}) or Heffernan-Tawn (\code{ht}) model for a given duration.
 }
 \examples{
+
+# Load data
+data(noaa_ww3)
+
+# Fit Heffernan-Tawn model with 0.95 marginal and dependence thresholds
+noaa_ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, p_margin_thresh = 0.95, p_dep_thresh = 0.95)
+
+# Draw the equivalent of 100-year of data from the fitted Heffernan-Tawn model
+sim_ht_100y = sample_jdistr(jdistr = noaa_ht, sim_year = 100)
+
+# Fit Weibull-log-normal model
+noaa_wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
+
+# Draw the equivalent of 100-year of data from the fitted Weibull-log-normal model
+sim_wln_100y = sample_jdistr(jdistr = noaa_wln, sim_year = 100)
 
 }
