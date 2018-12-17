@@ -6,7 +6,7 @@
 #'
 #' @docType data
 #' 
-#' @name sample_data
+#' @name noaa_ww3
 #' 
 #' @format An object of class \code{data.table} with columns \code{time}, \code{hs} and \code{tp};
 #' see \code{\link{data.table}}.
@@ -19,9 +19,9 @@
 #'
 #' @examples
 #' # Loading the 3-hourly time series data
-#' data(sample_ts_10y)
+#' data(noaa_ww3_ts)
 #' 
 #' # Loading the declustered event peak data
-#' data(sample_peak_10y)
+#' data(noaa_ww3_peak)
 
 NULL
