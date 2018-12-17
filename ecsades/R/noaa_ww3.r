@@ -1,8 +1,8 @@
 #' Sample wave data by NOAA
 #'
-#' This sample dataset contains wave data (Hs and Tp) provided by the WaveWatch III project
-#' by NOAA for location 30.5N, 240E.  It contains 3-hourly data from 1 January 2006 to 
-#' 31 December 2016.
+#' This sample dataset contains wave peak data (large Hs and/or Tp) as extracted from
+#' the 3-hourly (before March 1st 2010) and 1-hourly (after March 1st 2010) wave time series data 
+#' provided by NOAA's WaveWatch III project for location 30.5N, 240E.
 #'
 #' @docType data
 #' 
@@ -18,10 +18,7 @@
 #' @source \href{http://polar.ncep.noaa.gov/waves/wavewatch/}{NOAA WAVEWATCH III Model}
 #'
 #' @examples
-#' # Loading the 3-hourly time series data
-#' data(noaa_ww3_ts)
-#' 
-#' # Loading the declustered event peak data
-#' data(noaa_ww3_peak)
+#' data(noaa_ww3)
+
 
 NULL
