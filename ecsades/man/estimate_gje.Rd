@@ -17,9 +17,9 @@ or \code{\link{fit_wln}}.  See details.}
 \item{sample_data_npy}{the (optional) number of data points per year of the sample data. See details.}
 
 \item{output_rp}{the required return periods (in years) for the estimated contours. Note that return periods
-that are substantially larger than the data coverage may lead to a long processing time}
+that are substantially larger than the data coverage may lead to a long processing time.}
 
-\item{n_point}{the number of points to output around each contour}
+\item{n_point}{the number of points to output around each contour. The default value is 100.}
 
 \item{ref_tp}{the wave period for the reference point. The default value is 0. See details.}
 

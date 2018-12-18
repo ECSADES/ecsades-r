@@ -8,9 +8,9 @@ sample_jdistr(jdistr, sim_year)
 }
 \arguments{
 \item{jdistr}{a \code{wln} or \code{ht} joint distribution object, as the output from function \code{\link{fit_wln}}
-and \code{\link{fit_ht}} respectively}
+and \code{\link{fit_ht}} respectively.}
 
-\item{sim_year}{the period of the simulate data in equivalent number of years}
+\item{sim_year}{the period of the simulate data in equivalent number of years.}
 }
 \value{
 The function returns \code{data.table} object with two columns - wave

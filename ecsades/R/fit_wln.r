@@ -8,10 +8,10 @@
 #' proposed in Haver and Winterstein (2008).
 #' 
 #' @param data the wave data in the form a \code{data.table} with wave height \code{hs} and wave period
-#' \code{tp} as columns
+#' \code{tp} as columns.
 #' 
 #' @param npy the number of data points per year, usually estimated by the number of rows in the
-#' supplied wave data divided by the total period of data coverage (in years)
+#' supplied wave data divided by the total period of data coverage (in years).
 #' 
 #' @return An joint distribution object of class \code{wln} containing the key information of a fitted
 #' Weibull-log-normal model, including the three parameters of the Weibull distribution for \code{hs}

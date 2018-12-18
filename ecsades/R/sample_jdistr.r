@@ -5,8 +5,9 @@
 #' (\code{wln}) or Heffernan-Tawn (\code{ht}) model for a given duration.
 #' 
 #' @param jdistr a \code{wln} or \code{ht} joint distribution object, as the output from function \code{\link{fit_wln}}
-#' and \code{\link{fit_ht}} respectively
-#' @param sim_year the period of the simulate data in equivalent number of years
+#' and \code{\link{fit_ht}} respectively.
+#' 
+#' @param sim_year the period of the simulate data in equivalent number of years.
 #'
 #' @return The function returns \code{data.table} object with two columns - wave
 #' height \code{hs} and wave period and \code{tp}.
