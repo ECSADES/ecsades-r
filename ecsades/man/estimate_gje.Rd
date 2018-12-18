@@ -34,6 +34,13 @@ This function estimates the generalised joint exceedance contours, as proposed i
 given sample data or a fitted joint distribution of class \code{ht} or \code{wln} object.
 }
 \details{
+For each return period of the output contours, the corresponding reference point (\code{hs}, \code{tp}) divides
+the space into (up to) four quadrants.  The joint exceedance region of a given point
+is then the corner formed by the point as the vertex, two semi-straight lines parallel to the \code{hs} and \code{tp}
+axes respectively, and facing away from the reference point.
+
+Please refer to Jonathan et al. (2014) for the mathematical formulation of the definition.
+
 This function can be applied to either a fitted joint distribution of class \code{ht} or \code{wln}. This
 happens when the user supplies a valid \code{ht} or \code{wln} object, and ignores arguments \code{sample_data}
 and \code{sample_data_npy}.
@@ -44,13 +51,6 @@ to supply both the sample data \code{sample_data} and the corresponding number o
 but must contain \code{hs} and \code{tp} as columns.
 
 Providing \code{sample_data} and \code{sample_data_npy} will make the input \code{jdistr} redundant.
-
-For each return period of the output contours, the corresponding reference point (\code{hs}, \code{tp}) divides
-the space into (up to) four quadrants.  The joint exceedance region of a given point
-is then the corner formed by the point as the vertex, two semi-straight lines parallel to the \code{hs} and \code{tp}
-axes respectively, and facing away from the reference point.
-
-Please refer to Jonathan et al. (2014) for the mathematical formulation of the definition.
 }
 \examples{
 # Load data

@@ -21,6 +21,13 @@
 #' @param ref_hs the wave height for the reference point. The default value is 0. See details.
 #' 
 #' @details
+#' For each return period of the output contours, the corresponding reference point (\code{hs}, \code{tp}) divides
+#' the space into (up to) four quadrants.  The joint exceedance region of a given point
+#' is then the corner formed by the point as the vertex, two semi-straight lines parallel to the \code{hs} and \code{tp}
+#' axes respectively, and facing away from the reference point.
+#' 
+#' Please refer to Jonathan et al. (2014) for the mathematical formulation of the definition.
+#' 
 #' This function can be applied to either a fitted joint distribution of class \code{ht} or \code{wln}. This
 #' happens when the user supplies a valid \code{ht} or \code{wln} object, and ignores arguments \code{sample_data}
 #' and \code{sample_data_npy}.
@@ -32,12 +39,6 @@
 #' 
 #' Providing \code{sample_data} and \code{sample_data_npy} will make the input \code{jdistr} redundant.
 #' 
-#' For each return period of the output contours, the corresponding reference point (\code{hs}, \code{tp}) divides
-#' the space into (up to) four quadrants.  The joint exceedance region of a given point
-#' is then the corner formed by the point as the vertex, two semi-straight lines parallel to the \code{hs} and \code{tp}
-#' axes respectively, and facing away from the reference point.
-#' 
-#' Please refer to Jonathan et al. (2014) for the mathematical formulation of the definition.
 #' 
 #' @return A set of estimated environmental contours with the specified return periods in the format
 #' of a \code{data.table} with \code{rp}, \code{hs}, and \code{tp} as columns.
