@@ -28,7 +28,7 @@ data(noaa_ww3, package = "ecsades")
 Alternatively, the user could use function ```fread()``` from the ```data.table``` package to read in their own wave data.
 
 ## Author
-* [Ye Liu](y.liu@hrwallingford.com)
+* [Ye Liu](https://github.com/yeliuhrw) - y.liu@hrwallingford.com
 
 ## Acknowledgments
 This work was part-funded by the European Union ERA-NET project entitled "Environmental Contours for SAfe DEsign of Ships and other marine structures (ECSADES)". The author thanks Erik Vanem and Arne Husbey for their help on parts of the code, and the project team for useful discussions.
