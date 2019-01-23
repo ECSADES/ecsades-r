@@ -51,8 +51,8 @@ fit_wln = function(data, npy){
 .fit_iform_lnorm = function(hs, tp){
   
   log_tp = log(tp)
-  # theta = c(d, e, f, g, k, m, q)
-  theta0 = c(d=mean(log_tp), e=0, f=0, g=sd(log_tp), k=0, m=0, q=0)
+  # theta = c(a0, a1, a2, b0, b1, b2)
+  theta0 = c(mean(log_tp), 0, 0, sd(log_tp), 0, 0)
   op = optim(
     par = theta0,
     fn = .nll_iform_lnorm,
@@ -69,19 +69,22 @@ fit_wln = function(data, npy){
 .nll_iform_lnorm = function(theta, log_tp, hs){
   
   # Constraints
-  if(theta[3] <= 0 | theta[6]>0 | theta[4]<0 | theta[4]+theta[5]<0){
+  mean_range = theta[1] + theta[2] * c(.limit_inf, .limit_zero)^theta[3]
+  sd_range = theta[4] + theta[5] * exp(theta[6] * c(.limit_inf, .limit_zero))
+  
+  if(any(is.na(sd_range)) || any(is.na(mean_range)) || min(sd_range)<.limit_zero | max(sd_range)>.limit_inf | max(mean_range)>.limit_inf){
     return(.limit_inf)
   }
   
   # mean & sd
-  norm_mean = theta[1] + theta[2] * log(hs + theta[3])
-  norm_var = theta[4] + theta[5] * exp(theta[6] * (hs ^ theta[7]))
-  if (any(norm_var <= 0)){
+  norm_mean = theta[1] + theta[2]* (hs^theta[3])
+  norm_sd = theta[4] + theta[5] * exp(theta[6] * hs)
+  if (any(norm_sd <= 0)){
     return(.limit_inf)
   }
   
   # return
-  nll = -dnorm(log_tp, norm_mean, sqrt(norm_var), log=TRUE)
+  nll = -dnorm(log_tp, norm_mean, norm_sd, log=TRUE)
   res = min(.limit_inf, sum(nll))
   return(res)
 }
