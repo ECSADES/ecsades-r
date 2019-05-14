@@ -110,9 +110,9 @@ sample_jdistr = function(jdistr, sim_year){
   hs = rweibull(n_sim, shape = wln$hs$par["shape"], scale = wln$hs$par["scale"]) + wln$hs$par["loc"]
   
   # sample tp cond on hs
-  tp_norm_mean = wln$tp$par[1] + wln$tp$par[2] * log(hs + wln$tp$par[3])
-  tp_norm_var = wln$tp$par[4] + wln$tp$par[5] * exp(wln$tp$par[6] * (hs ^ wln$tp$par[7]))
-  tp = exp(rnorm(n_sim, tp_norm_mean, sqrt(tp_norm_var)))
+  tp_norm_mean = wln$tp$par[1] + wln$tp$par[2] * (hs ^ wln$tp$par[3])
+  tp_norm_sd = wln$tp$par[4] + wln$tp$par[5] * exp(wln$tp$par[6] * hs)
+  tp = exp(rnorm(n_sim, tp_norm_mean, tp_norm_sd))
   
   res = data.table(hs, tp)
   return(res)

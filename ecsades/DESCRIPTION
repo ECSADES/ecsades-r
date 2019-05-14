@@ -1,8 +1,8 @@
 Package: ecsades
 Type: Package
 Title: Environmental contours for safe design of ships and other marine structures 
-Version: 1.0.0
-Date: 2018-12-19
+Version: 1.0.1
+Date: 2019-01-24
 Author: Ye Liu
 Maintainer: Ye Liu <y.liu@hrwallingford.com>
 Description: 
