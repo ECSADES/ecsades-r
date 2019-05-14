@@ -4,13 +4,17 @@
 \alias{sample_jdistr}
 \title{Drawing a sample from a fitted joint distribution}
 \usage{
-sample_jdistr(jdistr, sim_year)
+sample_jdistr(jdistr, sim_year, perturbed_ht_residuals = TRUE)
 }
 \arguments{
 \item{jdistr}{a \code{wln} or \code{ht} joint distribution object, as the output from function \code{\link{fit_wln}}
 and \code{\link{fit_ht}} respectively.}
 
 \item{sim_year}{the period of the simulate data in equivalent number of years.}
+
+\item{perturbed_ht_residuals}{whether or not to the simulation from the Heffernan-Tawn (\code{ht}) model should
+add a perturbation when sampling from the empirical residual distribution (default value is \code{TRUE}).  This
+argument is ignored when the input object is a Weibull-log-normal (\code{wln}) distribution.}
 }
 \value{
 The function returns \code{data.table} object with two columns - wave
@@ -28,14 +32,19 @@ data(noaa_ww3)
 # Fit Heffernan-Tawn model with 0.95 marginal and dependence thresholds
 noaa_ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, p_margin_thresh = 0.95, p_dep_thresh = 0.95)
 
-# Draw the equivalent of 100-year of data from the fitted Heffernan-Tawn model
-sim_ht_100y = sample_jdistr(jdistr = noaa_ht, sim_year = 100)
+# Draw the equivalent of 100-year of data from the fitted Heffernan-Tawn model with or without perturbed residuals
+sim_ht1 = sample_jdistr(jdistr = noaa_ht, sim_year = 100, perturbed_ht_residuals = FALSE)
+sim_ht2 = sample_jdistr(jdistr = noaa_ht, sim_year = 100)
+par(mfrow=c(1,2))
+plot(sim_ht1, pch=20, cex=.5, main="HT without perturbation")
+plot(sim_ht2, pch=20, cex=.5, main="HT with perturbation")
 
 # Fit Weibull-log-normal model
 noaa_wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
 
 # Draw the equivalent of 100-year of data from the fitted Weibull-log-normal model
-sim_wln_100y = sample_jdistr(jdistr = noaa_wln, sim_year = 100)
+sim_wln = sample_jdistr(jdistr = noaa_wln, sim_year = 100)
+plot(sim_wln, pch=20, cex=.5, main="WLN")
 
 }
 \seealso{
