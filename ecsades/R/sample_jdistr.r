@@ -22,7 +22,7 @@
 #' data(noaa_ww3)
 #' 
 #' # Fit Heffernan-Tawn model with 0.95 marginal and dependence thresholds
-#' noaa_ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, p_margin_thresh = 0.95, p_dep_thresh = 0.95)
+#' noaa_ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, margin_thresh_count = 100, dep_thresh_count = 100)
 #' 
 #' # Draw the equivalent of 100-year of data from the fitted Heffernan-Tawn model with or without perturbed residuals
 #' sim_ht1 = sample_jdistr(jdistr = noaa_ht, sim_year = 100, perturbed_ht_residuals = FALSE)

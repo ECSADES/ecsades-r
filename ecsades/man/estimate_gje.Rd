@@ -60,7 +60,7 @@ Providing \code{sample_data} and \code{sample_data_npy} will make the input \cod
 data(noaa_ww3)
 
 # Generate a 2000-year sample data based on fitted HT
-ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, p_margin_thresh = 0.95, p_dep_thresh = 0.95)
+ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, margin_thresh_count = 100, dep_thresh_count = 100)
 n_sim_year = 2000
 sample_data = sample_jdistr(jdistr = ht, sim_year = n_sim_year)
 

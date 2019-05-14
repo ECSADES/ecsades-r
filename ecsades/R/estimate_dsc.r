@@ -41,7 +41,7 @@
 #' data(noaa_ww3)
 #' 
 #' # Estimate the DSC based on fitted Heffernan-Tawn model
-#' ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, p_margin_thresh = 0.95, p_dep_thresh = 0.95)
+#' ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, margin_thresh_count = 100, dep_thresh_count = 100)
 #' dsc_ht = estimate_dsc(jdistr = ht, output_rp = c(1,10,100))
 #' 
 #' # Plot output

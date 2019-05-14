@@ -40,8 +40,8 @@ data(noaa_ww3)
 ht = fit_ht(
   data = noaa_ww3,
   npy = nrow(noaa_ww3)/10,
-  p_margin_thresh = 0.95,
-  p_dep_thresh = 0.95)
+  margin_thresh_count = 100,
+  dep_thresh_count = 100)
 
 # Estimate the DSC contours using the Hs return levels as 
 dsc = estimate_dsc(jdistr = ht,  output_rp = c(1,10,100))
