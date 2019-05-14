@@ -39,19 +39,37 @@
 #' option effectively weighs up points in the tail of the distribution, but weighs down the points in the centre
 #' of the distribution.
 #' 
-#' @return An joint distribution object of class \code{wln} containing the key information of a fitted
-#' Weibull-log-normal model, including the three parameters of the Weibull distribution for \code{hs}
-#' and the seven parameters of the conditional log-normal distribution for \code{tp} given \code{tp}
+#' @return A joint distribution object of class \code{wln} containing the key information of a fitted
+#' Weibull-log-normal model, including the three parameters of the Weibull distribution for \code{hs} (as a named
+#' numeric vector) and the six parameters of the conditional log-normal distribution for \code{tp} given \code{hs}
+#' (as an unamed numeric vector, in the order of \eqn{{a_0, a_1, a_2, b_0, b_1, b_2}}).
 #'
+#' It is possible to replace one or multiple \code{hs} or \code{tp} parameters in an existing \code{wln} object
+#' (see the examples provided below).  Note the resulting object may violate the input \code{hs_constraint_range}.
+#' The current version of the package does not automatically check the validity of these user-input parameters.
+#' Therefore users are advised to perform the check independently.
+#' 
 #' @examples
 #' # Load data
 #' data(noaa_ww3)
 #' 
 #' # Fit Weibull-log-normal distribution 
-#' noaa_wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
+#' noaa_wln1 = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
 #' 
 #' # Fit Weibull-log-normal distribution with additional options
 #' noaa_wln2 = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10, hs_constraint_range = 3, weighted_tp_fit = TRUE)
+#' 
+#' # Update the hs parameters for object noaa_wln1
+#' noaa_wln3 = copy(noaa_wln1)
+#' noaa_wln3$hs$par[["loc"]] = 0.66
+#' noaa_wln3$hs$par[["scale"]] = 2.2
+#' noaa_wln3$hs$par[["shape"]] = 1.8
+#' 
+#' # Update the tp parameters for object noaa_wln2
+#' noaa_wln4 = copy(noaa_wln2)
+#' noaa_wln4$tp$par[1] = 2.5
+#' noaa_wln4$tp$par[2] = -0.015
+#' 
 #' 
 #' @references 
 #' Haver, Sverre & Winterstein, Steven. (2009). Environmental Contour Lines: A Method for Estimating Long
