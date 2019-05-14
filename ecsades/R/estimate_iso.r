@@ -62,7 +62,7 @@
 #' iso = estimate_iso(jdistr = wln,  output_rp = c(1,10,100))
 #'   
 #' # Plot output
-#' plot_ec(iform, noaa_ww3)
+#' plot_ec(iso, noaa_ww3)
 #' 
 #' @seealso \code{\link{fit_ht}}, \code{\link{fit_wln}}, \code{\link{sample_jdistr}}, \code{\link{plot_ec}}
 #' 
