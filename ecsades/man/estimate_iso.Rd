@@ -70,7 +70,7 @@ wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
 iso = estimate_iso(jdistr = wln,  output_rp = c(1,10,100))
   
 # Plot output
-plot_ec(iform, noaa_ww3)
+plot_ec(iso, noaa_ww3)
 
 }
 \seealso{
