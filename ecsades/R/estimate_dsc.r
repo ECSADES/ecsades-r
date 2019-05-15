@@ -38,22 +38,22 @@
 #' 
 #' @examples
 #' # Load data
-#' data(noaa_ww3)
+#' data(ww3_pk)
 #' 
 #' # Estimate the DSC based on fitted Heffernan-Tawn model
-#' ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, margin_thresh_count = 100, dep_thresh_count = 100)
+#' ht = fit_ht(data = ww3_pk, npy = nrow(ww3_pk)/10, margin_thresh_count = 100, dep_thresh_count = 100)
 #' dsc_ht = estimate_dsc(jdistr = ht, output_rp = c(1,10,100))
 #' 
 #' # Plot output
-#' plot_ec(dsc_ht, noaa_ww3)
+#' plot_ec(dsc_ht, ww3_pk)
 #' 
 #' # Estimate the DSC based on sample data
-#' wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
+#' wln = fit_wln(data = ww3_pk, npy = nrow(ww3_pk)/10)
 #' sample_data = sample_jdistr(jdistr = wln, sim_year = 1000)
 #' dsc_data = estimate_dsc(sample_data = sample_data, sample_data_npy = nrow(sample_data)/1000, output_rp = c(1,10,100))
 #' 
 #' # Plot output
-#' plot_ec(dsc_data, noaa_ww3)
+#' plot_ec(dsc_data, ww3_pk)
 #' 
 #' @references
 #' Huseby, A., Vanem, E., Natvig, B., 2015. Alternative environmental contours for structural reliability

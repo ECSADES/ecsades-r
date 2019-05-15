@@ -26,12 +26,12 @@
 #'
 #' @examples
 #' # Load data
-#' data(noaa_ww3)
+#' data(ww3_pk)
 #' 
 #' # Fit the Heffernan-Tawn model to the data
 #' ht = fit_ht(
-#'   data = noaa_ww3,
-#'   npy = nrow(noaa_ww3)/10,
+#'   data = ww3_pk,
+#'   npy = nrow(ww3_pk)/10,
 #'   margin_thresh_count = 100,
 #'   dep_thresh_count = 100)
 #' 
@@ -40,7 +40,7 @@
 #'   
 #' # Plot output
 #' plot_ec(
-#'   ec = dsc, raw_data = noaa_ww3, hs_x = FALSE, save_to_file = "dsc_ht.png",
+#'   ec = dsc, raw_data = ww3_pk, hs_x = FALSE, save_to_file = "dsc_ht.png",
 #'   width = 6, height = 6, units = "in")
 #' 
 #' @export

@@ -19,23 +19,23 @@
 #' @examples
 #' 
 #' # Load data
-#' data(noaa_ww3)
+#' data(ww3_pk)
 #' 
 #' # Fit Heffernan-Tawn model with 0.95 marginal and dependence thresholds
-#' noaa_ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, margin_thresh_count = 100, dep_thresh_count = 100)
+#' ht = fit_ht(data = ww3_pk, npy = nrow(ww3_pk)/10, margin_thresh_count = 100, dep_thresh_count = 100)
 #' 
 #' # Draw the equivalent of 100-year of data from the fitted Heffernan-Tawn model with or without perturbed residuals
-#' sim_ht1 = sample_jdistr(jdistr = noaa_ht, sim_year = 100, perturbed_ht_residuals = FALSE)
-#' sim_ht2 = sample_jdistr(jdistr = noaa_ht, sim_year = 100)
+#' sim_ht1 = sample_jdistr(jdistr = ht, sim_year = 100, perturbed_ht_residuals = FALSE)
+#' sim_ht2 = sample_jdistr(jdistr = ht, sim_year = 100)
 #' par(mfrow=c(1,2))
 #' plot(sim_ht1, pch=20, cex=.5, main="HT without perturbation")
 #' plot(sim_ht2, pch=20, cex=.5, main="HT with perturbation")
 #' 
 #' # Fit Weibull-log-normal model
-#' noaa_wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
+#' wln = fit_wln(data = ww3_pk, npy = nrow(ww3_pk)/10)
 #'
 #' # Draw the equivalent of 100-year of data from the fitted Weibull-log-normal model
-#' sim_wln = sample_jdistr(jdistr = noaa_wln, sim_year = 100)
+#' sim_wln = sample_jdistr(jdistr = wln, sim_year = 100)
 #' plot(sim_wln, pch=20, cex=.5, main="WLN")
 #' 
 #' @seealso \code{\link{fit_ht}}, \code{\link{fit_wln}}

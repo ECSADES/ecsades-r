@@ -42,10 +42,10 @@ the exceedance probability needs to be quite small for the fit of GPD and HT to 
 }
 \examples{
 # Load data
-data(noaa_ww3)
+data(ww3_pk)
 
 # Fit Heffernan-Tawn model
-noaa_ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, margin_thresh_count = 100, dep_thresh_count = 100)
+ht = fit_ht(data = ww3_pk, npy = nrow(ww3_pk)/10, margin_thresh_count = 100, dep_thresh_count = 100)
 
 }
 \references{

@@ -61,16 +61,16 @@ Providing \code{sample_data} and \code{sample_data_npy} will make the input \cod
 }
 \examples{
 # Load data
-data(noaa_ww3)
+data(ww3_pk)
 
 # Fit the Weibull-log-normal distribution to hs and tp
-wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
+wln = fit_wln(data = ww3_pk, npy = nrow(ww3_pk)/10)
 
 # Estimate the GJE contours using the Hs return levels as 
 iso = estimate_iso(jdistr = wln,  output_rp = c(1,10,100))
   
 # Plot output
-plot_ec(iso, noaa_ww3)
+plot_ec(iso, ww3_pk)
 
 }
 \seealso{

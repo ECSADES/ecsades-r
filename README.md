@@ -21,9 +21,10 @@ An example of applying the functions in the package can be found in the package 
 ```
 ?ecsades::ecsades
 ```
-There is a sample data provided in the package, which is used in all examples in the help files.
+There are two sample datasets provided in the package, which are used in examples in the help files.
 ```
-data(noaa_ww3, package = "ecsades")
+data(ww3_pk, package = "ecsades")
+data(ww3_ts, package = "ecsades")
 ```
 Alternatively, the user could use function ```fread()``` from the ```data.table``` package to read in their own wave data.
 

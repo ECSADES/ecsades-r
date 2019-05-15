@@ -34,10 +34,10 @@
 #'
 #' @examples
 #' # Load data
-#' data(noaa_ww3)
+#' data(ww3_pk)
 #' 
 #' # Fit Heffernan-Tawn model
-#' noaa_ht = fit_ht(data = noaa_ww3, npy = nrow(noaa_ww3)/10, margin_thresh_count = 100, dep_thresh_count = 100)
+#' ht = fit_ht(data = ww3_pk, npy = nrow(ww3_pk)/10, margin_thresh_count = 100, dep_thresh_count = 100)
 #' 
 #' @references Heffernan, Janet & A. Tawn, Jonathan. (2004). A Conditional Approach for Multivariate Extreme Values.
 #' Journal of the Royal Statistical Society Series B. 66. 497-546. 10.1111/j.1467-9868.2004.02050.x. 
