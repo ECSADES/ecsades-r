@@ -23,7 +23,7 @@
 #' User manual and system documentation of WAVEWATCH III version 5.16.
 #' NOAA / NWS / NCEP / MMAB Technical Note 329, 326 pp. + Appendices.
 #'
-#' @source \href{http://polar.ncep.noaa.gov/waves/wavewatch/}{NOAA WAVEWATCH III Model}
+#' @source \href{https://polar.ncep.noaa.gov/waves/}{NOAA WAVEWATCH III Model}
 #'
 #' @examples
 #' data(ww3_ts)

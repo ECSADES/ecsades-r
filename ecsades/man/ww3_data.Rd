@@ -9,7 +9,7 @@
 \format{An object of class \code{data.table} with columns \code{time}, \code{hs} and \code{tp};
 see \code{\link{data.table}}.}
 \source{
-\href{http://polar.ncep.noaa.gov/waves/wavewatch/}{NOAA WAVEWATCH III Model}
+\href{https://polar.ncep.noaa.gov/waves/}{NOAA WAVEWATCH III Model}
 }
 \description{
 This sample dataset contains the wave height and wave period time series provided by 
