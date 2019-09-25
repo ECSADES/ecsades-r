@@ -96,7 +96,7 @@ estimate_iso = function(obj, output_rp, n_point=100){
   tp_par = wln$tp$par
   prob_hs = 1-1/(output_rp*wln$npy)
   hs0 = qweibull(p = prob_hs, shape = hs_par[["shape"]], scale = hs_par[["scale"]])+hs_par[["loc"]]
-  tp0 = exp(tp_par[1] + tp_par[2] * log(hs0 + tp_par[3]))
+  tp0 = exp(tp_par[1] + tp_par[2] * hs0^tp_par[3])
   ld0 = .ldwln(hs0, tp0, hs_par, tp_par)
   hs_max = log((-tp_par[4]+.limit_zero)/tp_par[5])/tp_par[6]
 
@@ -110,7 +110,7 @@ estimate_iso = function(obj, output_rp, n_point=100){
     this_calc = data.table(hs = seq(this_hs_range[1], this_hs_range[2], length.out = round(n_point/2)+1))
     
     ### Find the corresponding tp
-    this_calc[, mean_log:=tp_par[1] + tp_par[2] * log(hs + tp_par[3])]
+    this_calc[, mean_log:=tp_par[1] + tp_par[2] * (hs^tp_par[3])]
     this_calc[, var_log:=tp_par[4] + tp_par[5] * exp(tp_par[6] * hs)]
     this_calc[, ld_hs:=log(dweibull(hs-hs_par[["loc"]], shape=hs_par[["shape"]], scale=hs_par[["scale"]]))]
     this_calc[, ld_tp:=ld0[i]-ld_hs]
@@ -134,14 +134,14 @@ estimate_iso = function(obj, output_rp, n_point=100){
 
 .ldwln = function(hs, tp, hs_par, tp_par){
   f_hs = dweibull(hs-hs_par[["loc"]], shape=hs_par[["shape"]], scale=hs_par[["scale"]])
-  mean_log = tp_par[1] + tp_par[2] * log(hs + tp_par[3])
+  mean_log = tp_par[1] + tp_par[2] * (hs^tp_par[3])
   var_log = tp_par[4] + tp_par[5] * exp(tp_par[6] * hs)
   f_tp_hs = dlnorm(tp, meanlog = mean_log, sdlog = sqrt(var_log))
   return(log(f_hs)+log(f_tp_hs))
 }
 
 .find_max_ldwln_given_hs = function(hs, hs_par, tp_par){
-  mean_log = tp_par[1] + tp_par[2] * log(hs + tp_par[3])
+  mean_log = tp_par[1] + tp_par[2] * (hs^tp_par[3])
   var_log = tp_par[4] + tp_par[5] * exp(tp_par[6] * hs)
   tp_mode = exp(mean_log-var_log)
   return(.ldwln(hs, tp_mode, hs_par, tp_par))

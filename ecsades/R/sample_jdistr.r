@@ -124,8 +124,8 @@ sample_jdistr = function(jdistr, sim_year, perturbed_ht_residuals = TRUE){
   
   # sample tp cond on hs
   tp_norm_mean = wln$tp$par[1] + wln$tp$par[2] * (hs ^ wln$tp$par[3])
-  tp_norm_sd = wln$tp$par[4] + wln$tp$par[5] * exp(wln$tp$par[6] * hs)
-  tp = exp(rnorm(n_sim, tp_norm_mean, tp_norm_sd))
+  tp_norm_var = wln$tp$par[4] + wln$tp$par[5] * exp(wln$tp$par[6] * hs)
+  tp = exp(rnorm(n_sim, tp_norm_mean, sqrt(tp_norm_var)))
   
   res = data.table(hs, tp)
   return(res)

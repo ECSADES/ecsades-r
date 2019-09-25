@@ -26,7 +26,7 @@
 #' The formulation of the conditional distribution is given by
 #' \deqn{log(tp | hs=h) ~ N(\mu(h), \sigma(h)^2)}
 #' where the mean and the standard deviation are
-#' \deqn{\mu(h) = a_0 + a_1 h^a_2 and \sigma(h) = b_0 + b_1 exp(h * b_2)}
+#' \deqn{\mu(h) = a_0 + a_1 h^a_2 and \sigma(h)^2 = b_0 + b_1 exp(h * b_2)}
 #' 
 #' The strictly positive constraint for the standard deviation has a large influence on the estimated values for
 #' coefficients \eqn{b_0}, \eqn{b_1} and \eqn{b_2}. In general, enforcing the standardard deviation to be strictly
@@ -117,16 +117,16 @@ fit_wln = function(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE
   
   # Constraints
   mean_range = theta[1] + theta[2] * c(max(hs)*hs_constraint_range, .limit_zero)^theta[3]
-  sd_range = theta[4] + theta[5] * exp(theta[6] * c(max(hs)*hs_constraint_range, .limit_zero))
+  var_range = theta[4] + theta[5] * exp(theta[6] * c(max(hs)*hs_constraint_range, .limit_zero))
   
-  if(any(is.na(sd_range)) || any(is.na(mean_range)) || min(sd_range)<.limit_zero){
+  if(any(is.na(var_range)) || any(is.na(mean_range)) || min(var_range)<.limit_zero){
     return(.limit_inf)
   }
   
   # mean & sd
   norm_mean = theta[1] + theta[2]* (hs^theta[3])
-  norm_sd = theta[4] + theta[5] * exp(theta[6] * hs)
-  if (any(norm_sd <= 0)){
+  norm_var = theta[4] + theta[5] * exp(theta[6] * hs)
+  if (any(norm_var <= 0)){
     return(.limit_inf)
   }
   
@@ -140,7 +140,7 @@ fit_wln = function(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE
   }
   
   # return
-  nll = -dnorm(log_tp, norm_mean, norm_sd, log=TRUE)*weight - log_tp*weight
+  nll = -dnorm(log_tp, norm_mean, sqrt(norm_var), log=TRUE)*weight
   res = min(.limit_inf, sum(nll))
   return(res)
 }
