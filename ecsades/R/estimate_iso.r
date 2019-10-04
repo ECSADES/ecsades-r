@@ -60,13 +60,13 @@
 #' @export
 estimate_iso = function(object, output_rp, n_point=100){
   
-  if(class(object)=="ht"){
+  if("ht" %in% class(object)){
     
     res = .estimate_iso_from_ht(
       ht = object, output_rp = output_rp,
       n_point = n_point)
     
-  }else if(class(object)=="wln"){
+  }else if("wln" %in% class(object)){
     
     res = .estimate_iso_from_wln(
       wln = object, output_rp = output_rp,
@@ -80,7 +80,7 @@ estimate_iso = function(object, output_rp, n_point=100){
     
   }else{
     
-    stop("The input object must be of class ht, wln.")
+    stop("The input object must be of class ht or wln.")
   }
   return(res)
 }
