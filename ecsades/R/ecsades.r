@@ -43,5 +43,7 @@
 .limit_zero = 1e-7
 .seed_sorting = 170899
 .seed_sampling = 121110
-.rp_multiplier = 50
+.rp_multiplier = 1000
 .knn = 100
+.target_rp_lb = .1 # Ratio to the target RP as a threhsold for importance sampling Huseby et al (2014)
+.target_rp_ub = 1000 # Ratio to the target RP as an equivalent number of years to simulate from

@@ -131,3 +131,29 @@ sample_jdistr = function(jdistr, sim_year, perturbed_ht_residuals = TRUE){
   return(res)
 }
 
+.sample_wln_is = function(wln, target_rp){
+  
+  n_sim = round(wln$npy*target_rp*.target_rp_ub)
+  tail_prob = 1/(target_rp*.target_rp_lb*wln$npy)
+  min_r = qnorm(1-tail_prob)
+  n_tail = n_sim*exp(-min_r^2/2)
+  
+  # Generate importance samples outside the Rosenblatt transformed contour of tail_rtrp
+  set.seed(.seed_sampling)
+  calc = data.table(ur2 = runif(n_tail, min=pchisq(q = min_r^2,df = 2)))
+  calc[, r:=sqrt(qchisq(p=ur2, df = 2))]
+  calc[, dir:=runif(.N, min=0, max=2*pi)]
+  calc[, u_hs:=pnorm(cos(dir)*r)]
+  calc[, u_tp:=pnorm(sin(dir)*r)]
+  
+  # Sample hs
+  calc[, hs:= qweibull(u_hs, shape = wln$hs$par["shape"], scale = wln$hs$par["scale"]) + wln$hs$par["loc"]]
+  
+  # sample tp cond on hs
+  calc[, tp_norm_mean:= wln$tp$par[1] + wln$tp$par[2] * (hs ^ wln$tp$par[3])]
+  calc[, tp_norm_var:= wln$tp$par[4] + wln$tp$par[5] * exp(wln$tp$par[6] * hs)]
+  calc[, tp:= exp(qnorm(u_tp, tp_norm_mean, sqrt(tp_norm_var)))]
+  
+  # Return
+  return(calc[, .(hs, tp)])
+}
