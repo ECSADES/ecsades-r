@@ -116,10 +116,10 @@ fit_wln = function(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE
 .nll_iform_lnorm = function(theta, log_tp, hs, hs_constraint_range, weighted_tp_fit){
   
   # Constraints
-  mean_range = theta[1] + theta[2] * c(max(hs)*hs_constraint_range, .limit_zero)^theta[3]
-  var_range = theta[4] + theta[5] * exp(theta[6] * c(max(hs)*hs_constraint_range, .limit_zero))
+  mean_range = theta[1] + theta[2] * c(max(hs)*hs_constraint_range, min(hs)/hs_constraint_range)^theta[3]
+  var_range = theta[4] + theta[5] * exp(theta[6] * c(max(hs)*hs_constraint_range, min(hs)/hs_constraint_range))
   
-  if(any(is.na(var_range)) || any(is.na(mean_range)) || min(var_range)<.limit_zero){
+  if(any(is.na(var_range)) || any(is.na(mean_range)) || min(var_range)<=0){
     return(.limit_inf)
   }
   
