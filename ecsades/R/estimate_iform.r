@@ -164,7 +164,6 @@ estimate_iform = function(
   calc[, p1:=pnorm(u1)]
   calc[, p2:=pnorm(u2)]
 
-
   # Estimate hs based on hs model
   calc_hs = calc[p1>ht$dep$p_dep_thresh]
   calc_hs[p1<p_thresh, hs:=quantile(ht$margin$hs$emp, p1)]
@@ -173,15 +172,10 @@ estimate_iform = function(
     scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
   
   # Estimate tp based on tp|hs HT model for large hs
-  calc_hs[p1<0.5, lap1:=log(2*p1)]
-  calc_hs[p1>=0.5, lap1:=-log(2-2*p1)]
-  # calc_hs[, resid_q:=.get_quantile_with_gpd(
-  #   data = ht$dep$hs$resid, p_thresh = 1-n_exceed/length(ht$dep$hs$resid),
-  #   output_p = p2, high_only = T)]
+  calc_hs[, lap1:=.convert_unif_to_lap(p1)]
   calc_hs[, resid_q:=quantile(ht$dep$hs$resid, p2)]
   calc_hs[,lap2:=ht$dep$hs$par[1]*lap1+resid_q*lap1^ht$dep$hs$par[2]]
-  calc_hs[lap2<0, p_tp:=.5*exp(lap2)]
-  calc_hs[lap2>=0, p_tp:=1-.5*exp(-lap2)]
+  calc_hs[, p_tp:=.convert_lap_to_unif(lap2)]
   calc_hs[, tp:=quantile(ht$margin$tp$emp, p_tp)]
   calc_hs[p_tp>p_thresh, tp:=evd::qgpd(
     p = (p_tp-p_thresh)/(1-p_thresh), loc = ht$margin$tp$par[1],
@@ -195,39 +189,14 @@ estimate_iform = function(
     scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
   
   # Estimate hs based on hs|tp HT model for large tp
-  calc_tp[p2<0.5, lap2:=log(2*p2)]
-  calc_tp[p2>=0.5, lap2:=-log(2-2*p2)]
-  # calc_tp[, resid_q:=.get_quantile_with_gpd(
-  #   data = ht$dep$tp$resid, p_thresh = 1-n_exceed/length(ht$dep$tp$resid),
-  #   output_p = p1, high_only = T)]
+  calc_tp[, lap2:=.convert_unif_to_lap(p2)]
   calc_tp[, resid_q:=quantile(ht$dep$tp$resid, p1)]
   calc_tp[,lap1:=ht$dep$tp$par[1]*lap2+resid_q*lap2^ht$dep$tp$par[2]]
-  calc_tp[lap1<0, p_hs:=.5*exp(lap1)]
-  calc_tp[lap1>=0, p_hs:=1-.5*exp(-lap1)]
+  calc_tp[, p_hs:=.convert_lap_to_unif(lap1)]
   calc_tp[, hs:=quantile(ht$margin$hs$emp, p_hs)]
   calc_tp[p_hs>p_thresh, hs:=evd::qgpd(
     p = (p_hs-p_thresh)/(1-p_thresh), loc = ht$margin$hs$par[1],
     scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
-  
-  
-  # # Estimate tp based on simulated (hs, tp) for hs | tp for large tp
-  # n_sim_year = max(output_rp)*.rp_multiplier
-  # sim_tp = .sample_ht1(
-  #   n_sim = n_sim_year*ht$npy*(1-ht$dep$p_dep_thresh), par = ht$dep$tp$par,
-  #   resid = ht$dep$tp$resid, p_dep_thresh = ht$dep$p_dep_thresh, perturbed_ht_residuals = T)
-  # calc_low = calc[p1<=ht$dep$p_dep_thresh]
-  # bw_tp = bw.SJ(ht$dep$dep_data$tp)
-  # set.seed(.seed_sampling)
-  # emp = ht$dep$dep_data[, .(u_hs, tp=tp+rnorm(.N*10,0,bw_tp))]
-  # # emp = ht$dep$dep_data[, .(u_hs, tp)]
-  # 
-  # for(i in 1:nrow(calc_low)){
-  #   nn_sample = emp[abs(u_hs-calc_low[i]$p1)<=0.01][sort.list(abs(u_hs-calc_low[i]$p1))[1:min(.N, n_exceed*5)]]$tp
-  #   calc_low[i, tp:=.get_quantile_with_gpd(
-  #     data = nn_sample, p_thresh = 1-n_exceed/length(nn_sample),
-  #     output_p = p2, high_only = F)]
-  #   # calc_low[i, tp:=quantile(nn_sample, p2)]
-  # }
   
   # Return
   res = merge(

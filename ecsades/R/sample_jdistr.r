@@ -96,8 +96,7 @@ sample_jdistr = function(jdistr, sim_year, perturbed_ht_residuals = TRUE){
   a = par[1]
   b = par[2]
   sim_data = data.table(u_cond=runif(n_sim, p_dep_thresh, 1))
-  sim_data[u_cond<0.5, l_cond:=log(2*u_cond)]
-  sim_data[u_cond>=0.5, l_cond:=-log(2-2*u_cond)]
+  sim_data[, l_cond:=.convert_unif_to_lap(u_cond)]
   resid_max = sim_data[, (1-a)*l_cond^(1-b)]
   if(perturbed_ht_residuals){
     resid_bw = bw.SJ(resid)
@@ -107,8 +106,7 @@ sample_jdistr = function(jdistr, sim_year, perturbed_ht_residuals = TRUE){
   }
   resid_sample = sapply(resid_max, function(x)sample(extended_resid[extended_resid<x],1))
   sim_data[, l_dep:=resid_sample*l_cond^b+a*l_cond]
-  sim_data[l_dep<0, u_dep:=.5*exp(l_dep)]
-  sim_data[l_dep>=0, u_dep:=1-.5*exp(-l_dep)]
+  sim_data[, u_dep:=.convert_lap_to_unif(l_dep)]
   return(sim_data[, .(u_cond, u_dep)])
 }
 

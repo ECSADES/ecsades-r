@@ -132,9 +132,19 @@ fit_ht = function(data, npy, margin_thresh_count, dep_thresh_count){
   return(res)
 }
 
+.convert_unif_to_lap = function(unif){
+  calc = data.table(unif=unif, lap=NA_real_)
+  calc[unif>0.5, lap:=-log(2-2*unif)]
+  calc[unif<=0.5, lap:=log(2*unif)]
+  return(calc$lap)
+}
 
-
-
+.convert_lap_to_unif = function(lap){
+  calc = data.table(lap=lap, unif=NA_real_)
+  calc[lap>0, unif:=1-.5*exp(-lap)]
+  calc[lap<=0, unif:=.5*exp(lap)]
+  return(calc$unif)
+}
 
 
 
