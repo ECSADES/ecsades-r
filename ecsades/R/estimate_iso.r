@@ -200,11 +200,7 @@ estimate_iso = function(object, output_rp, n_point=100){
   res = rbindlist(lapply(cl, function(x)data.table(ld=x$level, lap_hs=x$x, lap_tp=x$y)))
   
   ## Convert contour to original scale
-<<<<<<< HEAD
   res[, u_hs:=.convert_lap_to_unif(lap_hs)]
-=======
-  res[, u_hs:=.convert_lap_to_unif(lap_us)]
->>>>>>> 3790bb9fdbae83c0486d8b98a53bf14e0131a01a
   res[, hs:=.convert_unif_to_origin(
     unif = u_hs, p_thresh = ht$margin$p_margin_thresh, gpd_par = ht$margin$hs$par, emp = ht$margin$hs$emp)]
   
