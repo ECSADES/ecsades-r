@@ -200,20 +200,29 @@ estimate_iso = function(object, output_rp, n_point=100){
   res = rbindlist(lapply(cl, function(x)data.table(ld=x$level, lap_hs=x$x, lap_tp=x$y)))
   
   ## Convert contour to original scale
-  res[, u_hs:=(.5+sign(lap_hs)/2)-sign(lap_hs)/2*exp(-abs(lap_hs))]
-  res[, u_tp:=(.5+sign(lap_tp)/2)-sign(lap_tp)/2*exp(-abs(lap_tp))]
-  n = length(ht$margin$hs$emp)
-  res[, hs:=quantile(ht$margin$hs$emp, u_hs)]
-  res[u_hs>ht$margin$p_margin_thresh, u_gpd:=(u_hs-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
-  res[u_hs>ht$margin$p_margin_thresh, hs:=evd::qgpd(
-    p = u_gpd, loc = ht$margin$hs$par[1],
-    scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
-  res[, u_gpd:=NULL]
-  res[, tp:=quantile(ht$margin$tp$emp, u_tp)]
-  res[u_tp>ht$margin$p_margin_thresh, u_gpd:=(u_tp-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
-  res[u_tp>ht$margin$p_margin_thresh, tp:=evd::qgpd(
-    p = u_gpd, loc = ht$margin$tp$par[1],
-    scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
+  res[, u_hs:=.convert_lap_to_unif(lap_us)]
+  res[, hs:=.convert_unif_to_origin(
+    unif = u_hs, p_thresh = ht$margin$p_margin_thresh, gpd_par = ht$margin$hs$par, emp = ht$margin$hs$emp)]
+  
+  res[, u_tp:=.convert_lap_to_unif(lap_tp)]
+  res[, tp:=.convert_unif_to_origin(
+    unif = u_tp, p_thresh = ht$margin$p_margin_thresh, gpd_par = ht$margin$tp$par, emp = ht$margin$tp$emp)]
+  # 
+  # res[, u_hs:=(.5+sign(lap_hs)/2)-sign(lap_hs)/2*exp(-abs(lap_hs))]
+  # res[, u_tp:=(.5+sign(lap_tp)/2)-sign(lap_tp)/2*exp(-abs(lap_tp))]
+  # n = length(ht$margin$hs$emp)
+  
+  # res[, hs:=quantile(ht$margin$hs$emp, u_hs)]
+  # res[u_hs>ht$margin$p_margin_thresh, u_gpd:=(u_hs-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
+  # res[u_hs>ht$margin$p_margin_thresh, hs:=evd::qgpd(
+  #   p = u_gpd, loc = ht$margin$hs$par[1],
+  #   scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
+  # res[, u_gpd:=NULL]
+  # res[, tp:=quantile(ht$margin$tp$emp, u_tp)]
+  # res[u_tp>ht$margin$p_margin_thresh, u_gpd:=(u_tp-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
+  # res[u_tp>ht$margin$p_margin_thresh, tp:=evd::qgpd(
+  #   p = u_gpd, loc = ht$margin$tp$par[1],
+  #   scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
   res[, angle:=atan2(y = lap_tp, x = lap_hs)/pi*180]
   
   ## Refine output contour
