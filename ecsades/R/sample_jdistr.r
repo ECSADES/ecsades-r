@@ -115,7 +115,54 @@ sample_jdistr = function(jdistr, sim_year, perturbed_ht_residuals = TRUE){
   return(sim_data[, .(u_cond, u_dep)])
 }
 
+.sample_ht_is = function(ht, target_rp){
+  
+  # Common
+  n_sim = round(ht$npy*target_rp*.target_rp_ub)
+  tail_prob = 1/(target_rp*.target_rp_lb*ht$npy)
+  min_r = qnorm(1-tail_prob)
+  n_tail = n_sim*exp(-min_r^2/2)
 
+  # Generate importance samples outside the Rosenblatt transformed contour of tail_rtrp
+  set.seed(.seed_sampling)
+  calc = data.table(ur2 = runif(n_tail, min=pchisq(q = min_r^2,df = 2)))
+  calc[, r:=sqrt(qchisq(p=ur2, df = 2))]
+  calc[, dir:=runif(.N, min=0, max=2*pi)]
+  bvn_rho = ht$dep$dep_data[, cor(qnorm(u_hs), qnorm(u_tp))]
+  
+  # Generate by Tp|Hs model
+  calc_hs = calc[, .(u_hs=pnorm(cos(dir)*r), u_tp_hs=pnorm(sin(dir)*r))]
+  calc_hs[, lap_hs:=.convert_unif_to_lap(u_hs)]
+  calc_hs[u_hs>=ht$dep$p_dep_thresh,lap_tp:=
+            lap_hs*ht$dep$hs$par[["a"]]+lap_hs^ht$dep$hs$par[["b"]]*quantile(ht$dep$hs$resid, u_tp_hs)]
+  calc_hs[u_hs>=ht$dep$p_dep_thresh, u_tp:=.convert_lap_to_unif(lap_tp)]
+  calc_hs[u_hs<ht$dep$p_dep_thresh, u_tp:=pnorm(qnorm(u_tp_hs, mean = bvn_rho*qnorm(u_hs), sd = 1-bvn_rho^2))]
+  calc_hs = rbind(
+    calc_hs[u_hs>ht$dep$p_dep_thresh][u_hs>u_tp],
+    calc_hs[u_hs<ht$dep$p_dep_thresh & u_tp<ht$dep$p_dep_thresh][seq(1, .N, by = 2)])
+  
+  # Generate by Tp|Hs model
+  calc_tp = calc[, .(u_hs_tp=pnorm(cos(dir)*r), u_tp=pnorm(sin(dir)*r))]
+  calc_tp[, lap_tp:=.convert_unif_to_lap(u_tp)]
+  calc_tp[u_tp>=ht$dep$p_dep_thresh,lap_hs:=
+            lap_tp*ht$dep$tp$par[["a"]]+lap_tp^ht$dep$tp$par[["b"]]*quantile(ht$dep$tp$resid, u_hs_tp)]
+  calc_tp[u_tp>=ht$dep$p_dep_thresh, u_hs:=.convert_lap_to_unif(lap_hs)]
+  calc_tp[u_tp<ht$dep$p_dep_thresh, u_hs:=pnorm(qnorm(u_hs_tp, mean = bvn_rho*qnorm(u_tp), sd = 1-bvn_rho^2))]
+  calc_tp = rbind(
+    calc_tp[u_tp>ht$dep$p_dep_thresh][u_tp>u_hs],
+    calc_tp[u_tp<ht$dep$p_dep_thresh & u_hs<ht$dep$p_dep_thresh][seq(2, .N, by = 2)])
+  
+  # Return
+  out = rbind(calc_hs[, .(u_hs, u_tp)], calc_tp[, .(u_hs, u_tp)])
+  out[, hs:=.convert_unif_to_origin(
+    unif = u_hs, p_thresh = ht$margin$p_margin_thresh,
+    gpd_par = ht$margin$hs$par, emp = ht$margin$hs$emp)]
+  out[, tp:=.convert_unif_to_origin(
+    unif = u_tp, p_thresh = ht$margin$p_margin_thresh,
+    gpd_par = ht$margin$tp$par, emp = ht$margin$tp$emp)]
+  
+  return(out[, .(hs, tp)])
+}
 
 # Weibull log-normal ------------------------------------------------------
 .sample_wln = function(wln, sim_year){

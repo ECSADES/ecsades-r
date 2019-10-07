@@ -76,14 +76,14 @@ estimate_dsc = function(object, output_rp, npy = NULL, n_point = 100){
     }
     
   }else if("data.table" %in% class(object)){
-
+    
     if(is.null(npy)){
       stop("Argument npy must be provided for estimating contours from sample data.")
     }
     res = cbind(
       rp=rep(output_rp, each=n_point+1),
       .estimate_dsc_from_data(sample_data = object, ex_prob = 1/output_rp/npy, n_point = n_point))
-
+    
   }else{
     
     stop("The input object must be of class ht, wln or data.table.")
@@ -140,3 +140,20 @@ estimate_dsc = function(object, output_rp, npy = NULL, n_point = 100){
   return(res)
 }
 
+.estimate_dsc_from_ht = function(ht, output_rp, n_point){
+  
+  out_list = list()
+  for(this_rp in output_rp){
+    this_sample_data = .sample_ht_is(ht = ht, target_rp = this_rp)
+    n_sim = round(ht$npy*this_rp*.target_rp_ub)
+    tail_prob = 1/(this_rp*.target_rp_lb*ht$npy)
+    min_r = qnorm(1-tail_prob)
+    ex_prob = 1-(n_sim*(1-1/this_rp/ht$npy)-n_sim*(1-exp(-min_r^2/2)))/this_sample_data[,.N]
+    out_list[[as.character(this_rp)]] =  cbind(
+      rp = this_rp, .estimate_dsc_from_data(
+        sample_data = this_sample_data,
+        ex_prob = ex_prob, n_point = n_point))
+  }
+  res = rbindlist(out_list)
+  return(res)
+}
