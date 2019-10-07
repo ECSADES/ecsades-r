@@ -166,37 +166,48 @@ estimate_iform = function(
 
   # Estimate hs based on hs model
   calc_hs = calc[p1>ht$dep$p_dep_thresh]
-  calc_hs[p1<p_thresh, hs:=quantile(ht$margin$hs$emp, p1)]
-  calc_hs[p1>=p_thresh, hs:=evd::qgpd(
-    p = (p1-p_thresh)/(1-p_thresh), loc = ht$margin$hs$par[1],
-    scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
+  calc_hs[, hs:=.convert_unif_to_origin(
+    unif = p1, p_thresh = p_thresh, gpd_par = ht$margin$hs$par, emp = ht$margin$hs$emp)]
+  # calc_hs[p1<p_thresh, hs:=quantile(ht$margin$hs$emp, p1)]
+  # calc_hs[p1>=p_thresh, hs:=evd::qgpd(
+  #   p = (p1-p_thresh)/(1-p_thresh), loc = ht$margin$hs$par[1],
+  #   scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
   
   # Estimate tp based on tp|hs HT model for large hs
   calc_hs[, lap1:=.convert_unif_to_lap(p1)]
   calc_hs[, resid_q:=quantile(ht$dep$hs$resid, p2)]
   calc_hs[,lap2:=ht$dep$hs$par[1]*lap1+resid_q*lap1^ht$dep$hs$par[2]]
   calc_hs[, p_tp:=.convert_lap_to_unif(lap2)]
-  calc_hs[, tp:=quantile(ht$margin$tp$emp, p_tp)]
-  calc_hs[p_tp>p_thresh, tp:=evd::qgpd(
-    p = (p_tp-p_thresh)/(1-p_thresh), loc = ht$margin$tp$par[1],
-    scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
+  calc_hs[, tp:=.convert_unif_to_origin(
+    unif = p_tp, p_thresh = p_thresh, gpd_par = ht$margin$tp$par, emp = ht$margin$tp$emp)]
+  
+  # calc_hs[, tp:=quantile(ht$margin$tp$emp, p_tp)]
+  # calc_hs[p_tp>p_thresh, tp:=evd::qgpd(
+  #   p = (p_tp-p_thresh)/(1-p_thresh), loc = ht$margin$tp$par[1],
+  #   scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
   
   # Estimate tp based on tp model
   calc_tp = calc[p2>ht$dep$p_dep_thresh]
-  calc_tp[p2<p_thresh, tp:=quantile(ht$margin$tp$emp, p2)]
-  calc_tp[p2>=p_thresh, tp:=evd::qgpd(
-    p = (p2-p_thresh)/(1-p_thresh), loc = ht$margin$tp$par[1],
-    scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
+  calc_tp[, tp:=.convert_unif_to_origin(
+    unif = p2, p_thresh = p_thresh, gpd_par = ht$margin$tp$par, emp = ht$margin$tp$emp)]
+  
+  # calc_tp[p2<p_thresh, tp:=quantile(ht$margin$tp$emp, p2)]
+  # calc_tp[p2>=p_thresh, tp:=evd::qgpd(
+  #   p = (p2-p_thresh)/(1-p_thresh), loc = ht$margin$tp$par[1],
+  #   scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
   
   # Estimate hs based on hs|tp HT model for large tp
   calc_tp[, lap2:=.convert_unif_to_lap(p2)]
   calc_tp[, resid_q:=quantile(ht$dep$tp$resid, p1)]
   calc_tp[,lap1:=ht$dep$tp$par[1]*lap2+resid_q*lap2^ht$dep$tp$par[2]]
   calc_tp[, p_hs:=.convert_lap_to_unif(lap1)]
-  calc_tp[, hs:=quantile(ht$margin$hs$emp, p_hs)]
-  calc_tp[p_hs>p_thresh, hs:=evd::qgpd(
-    p = (p_hs-p_thresh)/(1-p_thresh), loc = ht$margin$hs$par[1],
-    scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
+  calc_tp[, hs:=.convert_unif_to_origin(
+    unif = p_hs, p_thresh = p_thresh, gpd_par = ht$margin$hs$par, emp = ht$margin$hs$emp)]
+  
+  # calc_tp[, hs:=quantile(ht$margin$hs$emp, p_hs)]
+  # calc_tp[p_hs>p_thresh, hs:=evd::qgpd(
+  #   p = (p_hs-p_thresh)/(1-p_thresh), loc = ht$margin$hs$par[1],
+  #   scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
   
   # Return
   res = merge(
@@ -214,19 +225,4 @@ estimate_iform = function(
   return(res[, .(rp, hs, tp)])
 }
 
-.get_quantile_with_gpd = function(data, p_thresh, output_p, high_only=TRUE){
-  calc = data.table(output_p=output_p, value=quantile(data, output_p))
-  if(any(output_p>p_thresh)){
-    pot_high = evd::fpot(x = data, threshold = quantile(data, p_thresh), cmax = F, std.err = F)
-    calc[output_p>p_thresh, value:=evd::qgpd(
-      p = (output_p-p_thresh)/(1-p_thresh), loc = pot_high$threshold,
-      scale = pot_high$estimate[1], shape = pot_high$estimate[2])]
-  }
-  if(any(output_p<1-p_thresh)&&(!high_only)){
-    pot_low = evd::fpot(x = -data, threshold = quantile(-data, p_thresh), cmax = F, std.err = F)
-    calc[output_p<1-p_thresh, value:=-evd::qgpd(
-      p = (1-output_p-p_thresh)/(1-p_thresh), loc = pot_low$threshold,
-      scale = pot_low$estimate[1], shape = pot_low$estimate[2])]
-  }
-  return(calc$value)
-}
+

@@ -146,7 +146,14 @@ fit_ht = function(data, npy, margin_thresh_count, dep_thresh_count){
   return(calc$unif)
 }
 
-
+.convert_unif_to_origin = function(unif, p_thresh, gpd_par, emp){
+  calc = data.table(unif=unif, x=NA_real_)
+  calc[unif<p_thresh, x:=quantile(emp, unif)]
+  calc[unif>=p_thresh, x:=evd::qgpd(
+    p = (unif-p_thresh)/(1-p_thresh),
+    loc = gpd_par[1], scale = gpd_par[2], shape = gpd_par[3])]
+  return(calc$x)
+}
 
 
 
