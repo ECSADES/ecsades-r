@@ -26,7 +26,7 @@
 #' The formulation of the conditional distribution is given by
 #' \deqn{log(tp | hs=h) ~ N(\mu(h), \sigma(h)^2)}
 #' where the mean and the standard deviation are
-#' \deqn{\mu(h) = a_0 + a_1 h^a_2 and \sigma(h) = b_0 + b_1 exp(h * b_2)}
+#' \deqn{\mu(h) = a_0 + a_1 h^a_2 and \sigma(h)^2 = b_0 + b_1 exp(h * b_2)}
 #' 
 #' The strictly positive constraint for the standard deviation has a large influence on the estimated values for
 #' coefficients \eqn{b_0}, \eqn{b_1} and \eqn{b_2}. In general, enforcing the standardard deviation to be strictly
@@ -39,19 +39,37 @@
 #' option effectively weighs up points in the tail of the distribution, but weighs down the points in the centre
 #' of the distribution.
 #' 
-#' @return An joint distribution object of class \code{wln} containing the key information of a fitted
-#' Weibull-log-normal model, including the three parameters of the Weibull distribution for \code{hs}
-#' and the seven parameters of the conditional log-normal distribution for \code{tp} given \code{tp}
+#' @return A joint distribution object of class \code{wln} containing the key information of a fitted
+#' Weibull-log-normal model, including the three parameters of the Weibull distribution for \code{hs} (as a named
+#' numeric vector) and the six parameters of the conditional log-normal distribution for \code{tp} given \code{hs}
+#' (as an unamed numeric vector, in the order of \eqn{{a_0, a_1, a_2, b_0, b_1, b_2}}).
 #'
+#' It is possible to replace one or multiple \code{hs} or \code{tp} parameters in an existing \code{wln} object
+#' (see the examples provided below).  Note the resulting object may violate the input \code{hs_constraint_range}.
+#' The current version of the package does not automatically check the validity of these user-input parameters.
+#' Therefore users are advised to perform the check independently.
+#' 
 #' @examples
 #' # Load data
-#' data(noaa_ww3)
+#' data(ww3_pk)
 #' 
 #' # Fit Weibull-log-normal distribution 
-#' noaa_wln = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10)
+#' wln1 = fit_wln(data = ww3_pk, npy = nrow(ww3_pk)/10)
 #' 
 #' # Fit Weibull-log-normal distribution with additional options
-#' noaa_wln2 = fit_wln(data = noaa_ww3, npy = nrow(noaa_ww3)/10, hs_constraint_range = 3, weighted_tp_fit = TRUE)
+#' wln2 = fit_wln(data = ww3_pk, npy = nrow(ww3_pk)/10, hs_constraint_range = 3, weighted_tp_fit = TRUE)
+#' 
+#' # Update the hs parameters for object wln1
+#' wln3 = copy(wln1)
+#' wln3$hs$par[["loc"]] = 0.66
+#' wln3$hs$par[["scale"]] = 2.2
+#' wln3$hs$par[["shape"]] = 1.8
+#' 
+#' # Update the tp parameters for object wln2
+#' wln4 = copy(wln2)
+#' wln4$tp$par[1] = 2.5
+#' wln4$tp$par[2] = -0.015
+#' 
 #' 
 #' @references 
 #' Haver, Sverre & Winterstein, Steven. (2009). Environmental Contour Lines: A Method for Estimating Long
@@ -98,17 +116,17 @@ fit_wln = function(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE
 .nll_iform_lnorm = function(theta, log_tp, hs, hs_constraint_range, weighted_tp_fit){
   
   # Constraints
-  mean_range = theta[1] + theta[2] * c(max(hs)*hs_constraint_range, .limit_zero)^theta[3]
-  sd_range = theta[4] + theta[5] * exp(theta[6] * c(max(hs)*hs_constraint_range, .limit_zero))
+  mean_range = theta[1] + theta[2] * c(max(hs)*hs_constraint_range, min(hs)/hs_constraint_range)^theta[3]
+  var_range = theta[4] + theta[5] * exp(theta[6] * c(max(hs)*hs_constraint_range, min(hs)/hs_constraint_range))
   
-  if(any(is.na(sd_range)) || any(is.na(mean_range)) || min(sd_range)<.limit_zero){
+  if(any(is.na(var_range)) || any(is.na(mean_range)) || min(var_range)<=0){
     return(.limit_inf)
   }
   
   # mean & sd
   norm_mean = theta[1] + theta[2]* (hs^theta[3])
-  norm_sd = theta[4] + theta[5] * exp(theta[6] * hs)
-  if (any(norm_sd <= 0)){
+  norm_var = theta[4] + theta[5] * exp(theta[6] * hs)
+  if (any(norm_var <= 0)){
     return(.limit_inf)
   }
   
@@ -122,7 +140,7 @@ fit_wln = function(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE
   }
   
   # return
-  nll = -dnorm(log_tp, norm_mean, norm_sd, log=TRUE)*weight - log_tp*weight
+  nll = -dnorm(log_tp, norm_mean, sqrt(norm_var), log=TRUE)*weight
   res = min(.limit_inf, sum(nll))
   return(res)
 }
