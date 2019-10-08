@@ -33,7 +33,7 @@ This function prints on screen a given set of environmental contours and saves t
 to a file with optional customisation.
 }
 \examples{
-# Load data
+# Load sample data from NOAA's WaveWatch III project
 data(ww3_pk)
 
 # Fit the Heffernan-Tawn model to the data
@@ -41,14 +41,14 @@ ht = fit_ht(
   data = ww3_pk,
   npy = nrow(ww3_pk)/10,
   margin_thresh_count = 100,
-  dep_thresh_count = 100)
+  dep_thresh_count = 500)
 
 # Estimate the DSC contours using the Hs return levels as 
-dsc = estimate_dsc(jdistr = ht,  output_rp = c(1,10,100))
+dsc = estimate_dsc(object = ht,  output_rp = c(1,10,100))
   
-# Plot output
+# Plot output and save to a file
 plot_ec(
   ec = dsc, raw_data = ww3_pk, hs_x = FALSE, save_to_file = "dsc_ht.png",
-  width = 6, height = 6, units = "in")
+  width = 8, height = 6, units = "in")
 
 }

@@ -19,7 +19,7 @@ for \code{hs} and \code{tp}}
 
 \item{dep_thresh_count}{an integer indicating the number of exceedances (of the conditioning variable)
 strcitly above the threshold used for fitting the conditional multivariate extreme value model of
-Heffernan-Tawn (2004)}
+Heffernan and Tawn (2004)}
 }
 \value{
 An joint distribution object of class \code{ht} containing the key information of a fitted

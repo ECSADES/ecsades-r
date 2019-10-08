@@ -18,7 +18,7 @@
 #' 
 #' @param dep_thresh_count an integer indicating the number of exceedances (of the conditioning variable)
 #' strcitly above the threshold used for fitting the conditional multivariate extreme value model of
-#' Heffernan-Tawn (2004)
+#' Heffernan and Tawn (2004)
 #' 
 #' @details
 #' The input \code{data} must be a \code{data.table} object with \code{hs} and \code{tp} columns. This can be

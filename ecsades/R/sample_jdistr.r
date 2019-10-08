@@ -81,18 +81,6 @@ sample_jdistr = function(jdistr, sim_year, perturbed_ht_residuals = TRUE){
   res[, tp:=.convert_unif_to_origin(
     unif = u_tp, p_thresh = ht$margin$p_margin_thresh, gpd_par = ht$margin$tp$par, emp = ht$margin$tp$emp)]
   
-  # res[, hs:=quantile(ht$margin$hs$emp, u_hs)]
-  # res[u_hs>ht$margin$p_margin_thresh, u_gpd:=(u_hs-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
-  # res[u_hs>ht$margin$p_margin_thresh, hs:=evd::qgpd(
-  #   p = u_gpd, loc = ht$margin$hs$par[1],
-  #   scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
-  # res[, u_gpd:=NULL]
-  # res[, tp:=quantile(ht$margin$tp$emp, u_tp)]
-  # res[u_tp>ht$margin$p_margin_thresh, u_gpd:=(u_tp-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
-  # res[u_tp>ht$margin$p_margin_thresh, tp:=evd::qgpd(
-  #   p = u_gpd, loc = ht$margin$tp$par[1],
-  #   scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
-  
   return(res[, .(hs, tp)])
 }
 

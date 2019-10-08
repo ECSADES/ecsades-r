@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimate_iso.r
 \name{estimate_iso}
 \alias{estimate_iso}
-\title{Estimating the isodensity contours}
+\title{Estimating the isodensity (ISO) environmental contours}
 \usage{
 estimate_iso(object, output_rp, n_point = 100)
 }
@@ -15,52 +15,49 @@ or \code{\link{fit_wln}}.  See details.}
 \item{n_point}{the number of points to output around each contour. The default value is 100.}
 }
 \value{
-A set of estimated environmental contours with the specified return periods in the format
+A set of estimated ISO contours with the specified return periods in the format
 of a \code{data.table} with \code{rp}, \code{hs}, and \code{tp} as columns.
 }
 \description{
-This function estimates the isodensity environmental contours for a fitted joint distribution of
+This function estimates the isodensity (ISO) environmental contours for a fitted joint distribution of
 class \code{ht} or \code{wln}.
 }
 \details{
-The estimated contour for a given return period \code{rp} is a set of points with constant joint
-probability density, equal to that at the anchor point.  The anchor point for the \eqn{K}-year return
-period is the \eqn{K}-year return level on wave height \code{hs}, and the conditional median of
+The estimated isodensity contour for is a set of points with constant joint
+probability density, equal to that at the anchor point.  The anchor point for the \eqn{T}-year contour
+is the \eqn{K}-year return level on wave height \code{hs}, and the conditional median of
 the wave period \code{tp}. See the guidance by DNV-GL section 3.7.2.
 
 Due to the challenge of the non-parametric estimation of a joint denisty, the current version only
 supports joint probability density estimation based on
 the parametric form of the Weibull-log-normal model or the parametric part of the Heffernan-Tawn
-model.  In particular, the residual distribution in the Heffernan-Tawn is approximted by a normal
+model.  The residual distribution in the Heffernan-Tawn is approximted by a normal
 distribution, rather than estimated using the kernel density.
 
-For this same reason, the isodensity contour the function does not currently support inputs of
-original sample data like the other contour estimation functions in this package.  Also when applied
-to a Heffernan-Tawn \code{ht} class object, the quadrant below the dependence thresholds is ignored.
-
-The users are always encouraged to choose a suitable joint distribution using \code{fit_ht} or
-\code{fit_wln} and estimate the isodensity contours based on the fitted distribution.
+For this same reason, this function does not support sample data as the input \code{object}, unlike
+the other contour estimation functions in this package.  When applied
+to a fitted \code{ht} object, the quadrant below the dependence thresholds is ignored.
 }
 \examples{
-# Load data
+# Estimating ISO contours based on a fitted ht object
 data(ww3_pk)
+ht = fit_ht(data = ww3_pk, npy = nrow(ww3_pk)/10, margin_thresh_count = 50, dep_thresh_count = 500)
+ec_ht = estimate_iso(object = ht, output_rp = c(10,100,1000,10000))
+plot_ec(ec = ec_ht, raw_data = ww3_pk)
+
+# Estimating ISO contours based on a fitted wln object
 data(ww3_ts)
-
-# Draw isodensity contours using a ht fit on the full time series data
-ht = fit_ht(data = ww3_ts, npy = nrow(ww3_ts)/10, 100, 500)
-iso_ts = estimate_iso(object = ht,  output_rp = c(10, 100, 1000))
-plot_ec(ec = iso_ts, raw_data = ww3_ts)
-
-# Draw isodnesity contours using a wln fit on the peak data
-wln = fit_wln(data = ww3_pk, npy = nrow(ww3_pk)/10)
-iso_pk = estimate_iso(object = wln,  output_rp = c(1, 2, 5))
-plot_ec(ec = iso_pk, raw_data = ww3_pk)
-
+wln = fit_wln(data = ww3_ts, npy = nrow(ww3_ts)/10)
+ec_wln = estimate_iso(object = wln, output_rp = c(10,100,1000,10000))
+plot_ec(ec = ec_wln, raw_data = ww3_ts)
 
 }
 \references{
 DNVGL-RP-C205, Recommended Practice - Environmental conditions and environmental loads,
 Edition August 2017, https://rules.dnvgl.com/docs/pdf/DNVGL/RP/2017-08/DNVGL-RP-C205.pdf
+
+Heffernan, Janet & A. Tawn, Jonathan. (2004). A Conditional Approach for Multivariate Extreme Values.
+Journal of the Royal Statistical Society Series B. 66. 497-546. 10.1111/j.1467-9868.2004.02050.x.
 }
 \seealso{
 \code{\link{fit_ht}}, \code{\link{fit_wln}}, \code{\link{plot_ec}}
