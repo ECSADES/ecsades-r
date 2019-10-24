@@ -12,6 +12,10 @@
 #' @param npy the number of data points per year, usually estimated by the number of rows in the
 #' supplied wave data divided by the total period of data coverage (in years).
 #' 
+#' @param weibull_method the method for fitting the Weibull distribution to the \code{hs} column in the wave data. Choose
+#' between \code{"lmom"} for L-moment or \code{"mle"} for maximum likelihood estimator. The default option
+#' is \code{"lmom"}.
+#' 
 #' @param hs_constraint_range a multiplier to the maximum \code{hs} in the data within such that the standard
 #' deviation of the log-normal conditional distribution of \code{tp} given \code{hs} is constrained to be strictly
 #' positive (see details for more information) over this user-defined range. The default value is 1.5.
@@ -78,12 +82,12 @@
 #' @seealso \code{\link{fit_ht}}, \code{\link{sample_jdistr}}
 #' 
 #' @export
-fit_wln = function(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE){
+fit_wln = function(data, npy, weibull_method="lmom", hs_constraint_range = 1.5, weighted_tp_fit=FALSE){
   
   res = list()
   class(res) = "wln"
   res$npy = npy
-  res$hs = .fit_weibull(data = data$hs)
+  res$hs = .fit_weibull(data = data$hs, weibull_method = weibull_method)
   res$tp = .fit_iform_lnorm(
     hs = data$hs, tp = data$tp,
     hs_constraint_range = hs_constraint_range, weighted_tp_fit = weighted_tp_fit)
@@ -148,17 +152,26 @@ fit_wln = function(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE
 
 # Weibull fit ----------------------------------------------------
 
-.fit_weibull = function(data, method){
-  theta0 = c(min(data-min(data))/2, sd(data), 1)
-  op = nlminb(
-    start = theta0,
-    objective = .nll_weibull3, data = data,
-    lower = c(.limit_zero, .limit_zero, .limit_zero),
-    upper = c(min(data)-.limit_zero, .limit_inf, .limit_inf))
-  
+.fit_weibull = function(data, weibull_method){
   res = list()
-  res$par = c(loc=op$par[1], scale=op$par[2], shape=op$par[3])
-  res$conv = op$convergence
+  
+  if(weibull_method=="lmom"){
+    out = as.numeric(lmom::pelwei(lmom::samlmu(data)))
+    res$par = c(loc=out[1], scale=out[2], shape=out[3])
+    res$conv = NA
+  }else if(weibull_method=="mle"){
+    theta0 = c(min(data-min(data))/2, sd(data), 1)
+    op = nlminb(
+      start = theta0,
+      objective = .nll_weibull3, data = data,
+      lower = c(.limit_zero, .limit_zero, .limit_zero),
+      upper = c(min(data)-.limit_zero, .limit_inf, .limit_inf))
+    res$par = c(loc=op$par[1], scale=op$par[2], shape=op$par[3])
+    res$conv = op$convergence
+  }else{
+    stop("Only \"lmom\" or \"mle\" is supported.")
+  }
+  
   class(res) = "weibull"
   return(res)
 }

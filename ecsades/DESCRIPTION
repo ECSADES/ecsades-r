@@ -8,5 +8,5 @@ Maintainer: Ye Liu <y.liu@hrwallingford.com>
 Description: 
 License: Apache License v2.0
 ByteCompile: yes
-Depends: data.table, ggplot2, evd
+Depends: data.table, ggplot2, evd, lmom
 RoxygenNote: 6.1.1

@@ -4,7 +4,8 @@
 \alias{fit_wln}
 \title{Fitting Weibull-log-normal model to wave data}
 \usage{
-fit_wln(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE)
+fit_wln(data, npy, weibull_method = "lmom", hs_constraint_range = 1.5,
+  weighted_tp_fit = FALSE)
 }
 \arguments{
 \item{data}{the wave data in the form a \code{data.table} with wave height \code{hs} and wave period
@@ -12,6 +13,10 @@ fit_wln(data, npy, hs_constraint_range = 1.5, weighted_tp_fit = FALSE)
 
 \item{npy}{the number of data points per year, usually estimated by the number of rows in the
 supplied wave data divided by the total period of data coverage (in years).}
+
+\item{weibull_method}{the method for fitting the Weibull distribution to the \code{hs} column in the wave data. Choose
+between \code{"lmom"} for L-moment or \code{"mle"} for maximum likelihood estimator. The default option
+is \code{"lmom"}.}
 
 \item{hs_constraint_range}{a multiplier to the maximum \code{hs} in the data within such that the standard
 deviation of the log-normal conditional distribution of \code{tp} given \code{hs} is constrained to be strictly
