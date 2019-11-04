@@ -1,7 +1,7 @@
 #' Fitting Weibull-log-normal model to wave data
 #'
 #' @description 
-#' This function fits a Weibull-log-normal (\code{ht}) model to the given wave data, such that the wave height
+#' This function fits a Weibull-log-normal (\code{wln}) model to the given wave data, such that the wave height
 #' \code{hs} follows a translated (or 3-parameter) Weibull distribution, and the wave period given the wave
 #' follows a conditional log-normal distributuion with the location and scale parameters as functions
 #' of the corresponding \code{hs} value.
