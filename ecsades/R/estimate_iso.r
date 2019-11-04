@@ -95,7 +95,6 @@ estimate_iso = function(object, output_rp, n_point=100){
   hs0 = qweibull(p = prob_hs, shape = hs_par[["shape"]], scale = hs_par[["scale"]])+hs_par[["loc"]]
   tp0 = exp(tp_par[1] + tp_par[2] * hs0^tp_par[3])
   ld0 = .ldwln(hs0, tp0, hs_par, tp_par)
-  hs_max = log((-tp_par[4]+.limit_zero)/tp_par[5])/tp_par[6]
 
   ## Main loop
   res_list = list()
@@ -103,16 +102,17 @@ estimate_iso = function(object, output_rp, n_point=100){
     
     ### Identify ranges of hs
     this_hs_range = .find_hs_range_given_ldwln(
-      target_ldwln = ld0[i], hs_par = hs_par, tp_par = tp_par, hs_max = hs_max, hs_rl = hs0[i])
+      target_ldwln = ld0[i], hs_par = hs_par, tp_par = tp_par, hs_rl = hs0[i])
     this_calc = data.table(hs = seq(this_hs_range[1], this_hs_range[2], length.out = round(n_point/2)+1))
     
     ### Find the corresponding tp
     this_calc[, mean_log:=tp_par[1] + tp_par[2] * (hs^tp_par[3])]
-    this_calc[, var_log:=tp_par[4] + tp_par[5] * exp(tp_par[6] * hs)]
+    # this_calc[, sd_log:=tp_par[4] + tp_par[5] * exp(tp_par[6] * hs)]
+    this_calc[, sd_log:=pmax(.limit_zero, tp_par[4] + tp_par[5] * exp(tp_par[6] * hs))]
     this_calc[, ld_hs:=log(dweibull(hs-hs_par[["loc"]], shape=hs_par[["shape"]], scale=hs_par[["scale"]]))]
     this_calc[, ld_tp:=ld0[i]-ld_hs]
     for(i_row in 1:this_calc[,.N]){
-      i_tp_range = this_calc[i_row, .find_tp_given_ldtp(ld_tp, mean_log, var_log)]
+      i_tp_range = this_calc[i_row, .find_tp_given_ldtp(ld_tp, mean_log, sd_log)]
       this_calc[i_row, tp_lb:=i_tp_range[1]]
       this_calc[i_row, tp_ub:=i_tp_range[2]]
     }
@@ -120,8 +120,8 @@ estimate_iso = function(object, output_rp, n_point=100){
     ### Return
     res_list[[i]] = this_calc[, .(
       rp = output_rp[i],
-      hs = hs[c(1:(.N-1), .N:2)],
-      tp = c(tp_lb[1]/2+tp_ub[1]/2, tp_lb[2:(.N-1)], tp_ub[.N]/2+tp_lb[.N]/2, tp_ub[(.N-1):2]))]
+      hs = hs[c(1:(.N-1), .N:1)],
+      tp = c(tp_lb[1:(.N-1)], tp_ub[.N]/2+tp_lb[.N]/2, tp_ub[(.N-1):1]))]
   }
   
   ## Return
@@ -132,40 +132,42 @@ estimate_iso = function(object, output_rp, n_point=100){
 .ldwln = function(hs, tp, hs_par, tp_par){
   f_hs = dweibull(hs-hs_par[["loc"]], shape=hs_par[["shape"]], scale=hs_par[["scale"]])
   mean_log = tp_par[1] + tp_par[2] * (hs^tp_par[3])
-  var_log = tp_par[4] + tp_par[5] * exp(tp_par[6] * hs)
-  f_tp_hs = dlnorm(tp, meanlog = mean_log, sdlog = sqrt(var_log))
+  sd_log = pmax(.limit_zero, tp_par[4] + tp_par[5] * exp(tp_par[6] * hs))
+  f_tp_hs = dlnorm(tp, meanlog = mean_log, sdlog = sd_log)
   return(log(f_hs)+log(f_tp_hs))
 }
 
 .find_max_ldwln_given_hs = function(hs, hs_par, tp_par){
   mean_log = tp_par[1] + tp_par[2] * (hs^tp_par[3])
-  var_log = tp_par[4] + tp_par[5] * exp(tp_par[6] * hs)
-  tp_mode = exp(mean_log-var_log)
+  sd_log = pmax(.limit_zero, tp_par[4] + tp_par[5] * exp(tp_par[6] * hs))
+  tp_mode = exp(mean_log-sd_log^2)
   return(.ldwln(hs, tp_mode, hs_par, tp_par))
 }
 
-.find_hs_range_given_ldwln = function(target_ldwln, hs_par, tp_par, hs_max, hs_rl){
+.find_hs_range_given_ldwln = function(target_ldwln, hs_par, tp_par, hs_rl){
   op_fn = function(hs, hs_par, tp_par)(.find_max_ldwln_given_hs(hs, hs_par, tp_par)-target_ldwln-.limit_zero)^2
-  op1 = optim(
-    par = hs_rl/4, fn = op_fn, hs_par=hs_par, tp_par=tp_par, method = "Brent",
-    lower = .limit_zero, upper = hs_rl/2)
+  # op1 = optim(
+  #   par = hs_rl/4, fn = op_fn, hs_par=hs_par, tp_par=tp_par, method = "Brent",
+  #   lower = hs_par["loc"], upper = hs_rl/1.1)
   op2 = optim(
     par = hs_rl, fn = op_fn, hs_par=hs_par, tp_par=tp_par, method = "Brent",
-    lower = hs_rl/2, upper = hs_max)
-  c(op1$par, op2$par)
+    lower = hs_rl/2, upper = hs_rl*2)
+  # c(op1$par, op2$par)
+  c(hs_par["loc"]+.limit_zero, op2$par)
 }
 
-.find_tp_given_ldtp = function(target_ldtp, mean_log, var_log){
-  op_fn = function(tp, target_ldtp, mean_log, var_log)
-    (log(dlnorm(tp, meanlog = mean_log, sdlog = sqrt(var_log)))-target_ldtp)^2
+.find_tp_given_ldtp = function(target_ldtp, mean_log, sd_log){
+  op_fn = function(tp, target_ldtp, mean_log, sd_log)
+    (log(dlnorm(tp, meanlog = mean_log, sdlog = sd_log))-target_ldtp)^2
+  
   op1 = optim(
     par = .limit_zero, fn = op_fn,
-    mean_log=mean_log, var_log=var_log, target_ldtp = target_ldtp,
-    method = "Brent", lower = .limit_zero, upper = exp(mean_log-var_log))
+    mean_log=mean_log, sd_log=sd_log, target_ldtp = target_ldtp,
+    method = "Brent", lower = .limit_zero, upper = exp(mean_log-sd_log^2))
   op2 = optim(
-    par = exp(mean_log-var_log), fn = op_fn,
-    mean_log=mean_log, var_log=var_log, target_ldtp = target_ldtp,
-    method = "Brent", lower = exp(mean_log-var_log), upper =  exp(mean_log-var_log)*100)
+    par = exp(mean_log-sd_log^2), fn = op_fn,
+    mean_log=mean_log, sd_log=sd_log, target_ldtp = target_ldtp,
+    method = "Brent", lower = exp(mean_log-sd_log^2), upper =  exp(mean_log-sd_log^2)*10)
   return(c(op1$par, op2$par))
 }
 
@@ -204,22 +206,7 @@ estimate_iso = function(object, output_rp, n_point=100){
   res[, u_tp:=.convert_lap_to_unif(lap_tp)]
   res[, tp:=.convert_unif_to_origin(
     unif = u_tp, p_thresh = ht$margin$p_margin_thresh, gpd_par = ht$margin$tp$par, emp = ht$margin$tp$emp)]
-  # 
-  # res[, u_hs:=(.5+sign(lap_hs)/2)-sign(lap_hs)/2*exp(-abs(lap_hs))]
-  # res[, u_tp:=(.5+sign(lap_tp)/2)-sign(lap_tp)/2*exp(-abs(lap_tp))]
-  # n = length(ht$margin$hs$emp)
-  
-  # res[, hs:=quantile(ht$margin$hs$emp, u_hs)]
-  # res[u_hs>ht$margin$p_margin_thresh, u_gpd:=(u_hs-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
-  # res[u_hs>ht$margin$p_margin_thresh, hs:=evd::qgpd(
-  #   p = u_gpd, loc = ht$margin$hs$par[1],
-  #   scale = ht$margin$hs$par[2], shape = ht$margin$hs$par[3])]
-  # res[, u_gpd:=NULL]
-  # res[, tp:=quantile(ht$margin$tp$emp, u_tp)]
-  # res[u_tp>ht$margin$p_margin_thresh, u_gpd:=(u_tp-ht$margin$p_margin_thresh)/(1-ht$margin$p_margin_thresh)]
-  # res[u_tp>ht$margin$p_margin_thresh, tp:=evd::qgpd(
-  #   p = u_gpd, loc = ht$margin$tp$par[1],
-  #   scale = ht$margin$tp$par[2], shape = ht$margin$tp$par[3])]
+
   res[, angle:=atan2(y = lap_tp, x = lap_hs)/pi*180]
   
   ## Refine output contour

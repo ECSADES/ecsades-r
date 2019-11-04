@@ -43,5 +43,6 @@
 .limit_zero = 1e-7
 .seed_sampling = 121110
 .knn = 200
+.hs_res = .5
 .target_rp_lb = .1 # Ratio to the target RP as a threhsold for importance sampling Huseby et al (2014)
 .target_rp_ub = 1000 # Ratio to the target RP as an equivalent number of years to simulate from
