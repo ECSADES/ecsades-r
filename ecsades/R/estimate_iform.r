@@ -152,8 +152,9 @@ estimate_iform = function(
   calc[, p2:=pnorm(u2)]
   calc[, hs:=qweibull(p1, shape=wln$hs$par["shape"], scale=wln$hs$par["scale"])+wln$hs$par["loc"]]
   calc[, m:=wln$tp$par[1] + wln$tp$par[2] * (hs ^ wln$tp$par[3])]
-  calc[, v:=wln$tp$par[4] + wln$tp$par[5] * exp(wln$tp$par[6] * hs)]
-  calc[, tp:=qlnorm(p2, m, sqrt(v))]
+  # calc[, s:=wln$tp$par[4] + wln$tp$par[5] * exp(wln$tp$par[6] * hs)]
+  calc[, s:=pmax(.limit_zero, wln$tp$par[4] + wln$tp$par[5] * exp(wln$tp$par[6] * hs))]
+  calc[, tp:=qlnorm(p2, m, s)]
   
   # Return
   res = calc[, .(rp, hs, tp)]
